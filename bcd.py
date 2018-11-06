@@ -1,13 +1,10 @@
 from tkinter import *
 import tkinter.messagebox as msgbox
 from tkinter import simpledialog
-# from urllib.request import urlopen
-# from urllib.parse import urlencode
-# from urllib.error import HTTPError
+import requests
 import os, hashlib
 from Crypto.PublicKey import RSA
 import tkinter.ttk
-import requests
 
 class maxWindow:
 	def __init__(self):
@@ -28,6 +25,9 @@ class maxWindow:
 		self.state = False
 		self.tk.attributes("-fullscreen", False)
 		return "break"
+
+sess = requests.Session()
+
 
 
 def Start():
@@ -220,11 +220,9 @@ def updateG(event):
 def Logout():
 	global homeP
 	url = 'http://localhost/logout.php'
-	# data = urlencode(post_data).encode('utf-8')
 	try:
-		response = urlopen(url).read().decode()
-		print(response)
-	except HTTPError as e:
+		response = sess.post(url)
+	except ConnectionError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 	else:
 		homeP.destroy()
@@ -242,10 +240,9 @@ def CheckLogin(uid, pword):
 
 	url = 'http://localhost/login.php'
 	post_data = {'uid': uid, 'pass': pass_h}
-	# data = urlencode(post_data).encode('utf-8')
+	
 	try:
-		# response = urlopen(url, data).read().decode()
-		response = requests.post(url, data = post_data)
+		response = sess.post(url, data = post_data)
 		text = response.text
 	except ConnectionError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
