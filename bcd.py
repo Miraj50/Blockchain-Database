@@ -1,11 +1,13 @@
 from tkinter import *
 import tkinter.messagebox as msgbox
-from urllib.request import urlopen
-from urllib.parse import urlencode
-from urllib.error import HTTPError
+from tkinter import simpledialog
+# from urllib.request import urlopen
+# from urllib.parse import urlencode
+# from urllib.error import HTTPError
 import os, hashlib
 from Crypto.PublicKey import RSA
 import tkinter.ttk
+import requests
 
 class maxWindow:
 	def __init__(self):
@@ -44,12 +46,12 @@ def Start():
 	loginText = Label(startS, text='Login', font='Helvetica 16 bold', fg='darkblue')
 	loginText.grid(row=1, columnspan=2, column=1, pady=(5,10))
  
-	name = Label(startS, text='Username') # More labels
-	pword = Label(startS, text='Password') # ^
+	name = Label(startS, text='Username')
+	pword = Label(startS, text='Password')
 	name.grid(row=2, column=1, padx=(0,5), pady=(5,5), sticky=E)
 	pword.grid(row=3, column=1, padx=(0,5), pady=(5,5), sticky=E)
  
-	nameBox = Entry(startS) # The entry input
+	nameBox = Entry(startS)
 	pwordBox = Entry(startS, show='*')
 	nameBox.grid(row=2, column=2, padx=(0,0), pady=(5,5))
 	pwordBox.grid(row=3, column=2, padx=(0,0), pady=(5,5))
@@ -101,9 +103,9 @@ def submitPP(passP):
 	pass
 
 def Home():
-	# global uname
+	global uname
 	global homeP
-	uname='sudarsha'
+	# uname='sudarsha'
 	homeP = Tk()
 	# homeP = maxWindow().tk
 	# homeP.grid_rowconfigure(0, weight=1)
@@ -135,44 +137,85 @@ def Home():
 
 	homeP.mainloop()
 
+curFrame = ''
+
 def enterG():
 	global homeP
+	global eGrade
+	global vGrade
+	global curFrame
 
-	eGrade = Frame(homeP)
-	eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(2,5))
+	if curFrame == 'v':
+		vGrade.grid_forget()
+	
+	if 'eGrade' not in globals(): #Prevent Leaks
+		eGrade = Frame(homeP)
+		enterGrades = Text(eGrade, font='Times 11', wrap='word', relief='sunken', spacing2=0, spacing3=7, width=64, height=10)
+		enterGrades.grid(row=0, column=0)
 
-	enterGrades = Text(eGrade, height=10, font='Times 11', wrap='word', relief='raised', spacing2=0, spacing3=7)
-	enterGrades.grid(row=0, column=0)
+		yscroll = Scrollbar(eGrade, command=enterGrades.yview, orient=VERTICAL)
+		yscroll.grid(row=0, column=1, sticky='nws')
 
-	yscroll = Scrollbar(eGrade, command=enterGrades.yview, orient=VERTICAL)
-	yscroll.grid(row=0, column=1, sticky='nws')
+		enterGrades.configure(yscrollcommand=yscroll.set)
 
-	enterGrades.configure(yscrollcommand=yscroll.set)
+		enterGBut = Button(eGrade, text='Submit Grades', bg='green', fg='white', command=lambda: submitG(enterGrades.get("1.0", 'end-1c')))
+		enterGBut.grid(row=1, column=0, columnspan=2, pady=(0,0), sticky="ns")
+		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5))
+	else:
+		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5))
+	curFrame = 'e'
 
-	enterGBut = Button(eGrade, text='Submit Grades', bg='green', fg='white', command=lambda: submitG(enterGrades.get("1.0", 'end-1c')))
-	enterGBut.grid(row=1, column=0, columnspan=2, pady=(5,0), sticky="ns")
+	for name, value in globals().copy().items():
+		print(name, value)
+	# if 'vGrade' in globals():
+	# 	vGrade.destroy()
 	
 def submitG(grades):
 	print(grades)
 
-	# height = 5
-	# width = 5
-	# for i in range(height): #Rows
-	#     for j in range(width): #Columns
-	#         b = Entry(root, text="")
-	#         b.grid(row=i, column=j)
-
-	# print('MeraBaba')
-
 def viewG():
 	global homeP
-	viewF = Frame(homeP)
-	width = 3
-	height = 5
-	for i in range(height):
-		for j in range(width):
-			b = Text(viewF, height=1, width=24).grid(row=i, column=j)
-	viewF.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(5,5))
+	global eGrade
+	global vGrade
+	global curFrame
+
+	if curFrame == 'e':
+		eGrade.grid_forget()
+
+	if 'vGrade' not in globals(): #Prevent Leaks
+		vGrade = Frame(homeP)
+		viewList = Listbox(vGrade, font='Times 11', width=64, height=15)
+		viewList.insert(1, "160050029    |    CS333    |    AA")
+		viewList.insert(2, "160050056    |    CS333    |    AP")
+		viewList.insert(3, "160050057    |    CS333    |    AP")
+		viewList.grid(row=0, column=0)
+
+		yscroll = Scrollbar(vGrade, command=viewList.yview, orient=VERTICAL)
+		yscroll.grid(row=0, column=1, sticky='nws')
+
+		viewList.configure(yscrollcommand=yscroll.set)
+		viewList.bind("<Double-Button-1>", updateG)
+
+		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(3,5), sticky="")
+	else:
+		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(3,5), sticky="")
+	curFrame = 'v'
+
+	# for name, value in globals().copy().items():
+	# 	print(name, value)
+
+def updateG(event):
+	global homeP
+	global vGrade
+	idx = int(event.widget.curselection()[0])
+	value = event.widget.get(idx).split('|')
+
+	uG = simpledialog.askstring('Update grade', 'Enter New Grade', parent=homeP, initialvalue=value[2].strip())
+	value[2] = "    " + uG
+	vGrade.winfo_children()[0].delete(idx)
+	vGrade.winfo_children()[0].insert(idx, "|".join(value))
+
+
 
 def Logout():
 	global homeP
@@ -180,6 +223,7 @@ def Logout():
 	# data = urlencode(post_data).encode('utf-8')
 	try:
 		response = urlopen(url).read().decode()
+		print(response)
 	except HTTPError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 	else:
@@ -198,19 +242,21 @@ def CheckLogin(uid, pword):
 
 	url = 'http://localhost/login.php'
 	post_data = {'uid': uid, 'pass': pass_h}
-	data = urlencode(post_data).encode('utf-8')
+	# data = urlencode(post_data).encode('utf-8')
 	try:
-		response = urlopen(url, data).read().decode()
-	except HTTPError as e:
+		# response = urlopen(url, data).read().decode()
+		response = requests.post(url, data = post_data)
+		text = response.text
+	except ConnectionError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 		return
 
-	if response == "S":
+	if text == "S":
 		# msgbox.showinfo('Success', 'Success')
 		uname = uid
 		startS.destroy()
 		Home()
-	elif response == "U":
+	elif text == "U":
 		msgbox.showerror('Error', 'Please SignUp !')
 	else:
 		msgbox.showerror('Error', 'Incorrect Username or Password')
@@ -225,25 +271,24 @@ def SignUp(uid, pword, passPh):
 
 	url = 'http://localhost/signup.php'
 	post_data = {'uid': uid, 'pass': pass_h}
-	data = urlencode(post_data).encode('utf-8')
 	try:
-		response = urlopen(url, data).read().decode()
-	except HTTPError as e:
+		response = requests.post(url, data = post_data)
+		text = response.text
+	except ConnectionError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 		return
 	
-	if response == "S":
+	if text == "S":
 		msgbox.showinfo('Success', 'Successfully Registered\n\nPlease Re-login')
 		key = RSA.generate(4096)
 		encrypted_key = key.exportKey(passphrase=passPh, pkcs=8)
 		with open(os.path.expanduser("~/"+uid+".pem"), "wb+") as f:
 			f.write(encrypted_key)
-	elif response == "M":
+	elif text == "M":
 		msgbox.showerror('Error', 'Username already taken !')
 	else:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 	# print(key.publickey().exportKey())
 
-
-# Start()
-Home()
+Start()
+# Home()
