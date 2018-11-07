@@ -1,5 +1,6 @@
 from tkinter import *
 import tkinter.messagebox as msgbox
+from tkinter import scrolledtext
 from tkinter import simpledialog
 import requests
 import os, hashlib
@@ -103,12 +104,12 @@ def submitPP(passP):
 	pass
 
 def Home():
-	global uname
+	# global uname
 	global homeP
-	# uname='sudarsha'
+	uname='puru'
 	homeP = Tk()
 	# homeP = maxWindow().tk
-	# homeP.grid_rowconfigure(0, weight=1)
+	homeP.grid_rowconfigure(2, weight=1)
 	homeP.grid_columnconfigure(1, weight=1)
 	homeP.grid_columnconfigure(0, weight=1)
 	homeP.title('Grades')
@@ -145,30 +146,28 @@ def enterG():
 	global vGrade
 	global curFrame
 
+	homeP.geometry("") #Thanks to Bryan Oakley "stackoverflow.com/questions/53170983"
+
 	if curFrame == 'v':
 		vGrade.grid_forget()
 	
 	if 'eGrade' not in globals(): #Prevent Leaks
 		eGrade = Frame(homeP)
-		enterGrades = Text(eGrade, font='Times 11', wrap='word', relief='sunken', spacing2=0, spacing3=7, width=64, height=10)
-		enterGrades.grid(row=0, column=0)
+		# eGrade.grid_columnconfigure(0, weight=1) # Along with sticky=ewns will resize to full window
+		eGrade.grid_rowconfigure(0, weight=1)
 
-		yscroll = Scrollbar(eGrade, command=enterGrades.yview, orient=VERTICAL)
-		yscroll.grid(row=0, column=1, sticky='nws')
-
-		enterGrades.configure(yscrollcommand=yscroll.set)
+		enterGrades = scrolledtext.ScrolledText(eGrade, font='Times 11', wrap='word', spacing2=0, spacing3=7, width=64, height=10)
+		enterGrades.grid(row=0, column=0, sticky="ewns")
 
 		enterGBut = Button(eGrade, text='Submit Grades', bg='green', fg='white', command=lambda: submitG(enterGrades.get("1.0", 'end-1c')))
 		enterGBut.grid(row=1, column=0, columnspan=2, pady=(0,0), sticky="ns")
-		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5))
+		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5), sticky="ns")
 	else:
-		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5))
+		eGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,5), sticky="ns")
 	curFrame = 'e'
 
-	for name, value in globals().copy().items():
-		print(name, value)
-	# if 'vGrade' in globals():
-	# 	vGrade.destroy()
+	# for name, value in globals().copy().items():
+	# 	print(name, value)
 	
 def submitG(grades):
 	print(grades)
@@ -184,11 +183,14 @@ def viewG():
 
 	if 'vGrade' not in globals(): #Prevent Leaks
 		vGrade = Frame(homeP)
-		viewList = Listbox(vGrade, font='Times 11', width=64, height=15)
+		# vGrade.grid_columnconfigure(0, weight=1)
+		vGrade.grid_rowconfigure(0, weight=1)
+
+		viewList = Listbox(vGrade, font='Times 11', width=64, height=15, relief='sunken', justify="center")
 		viewList.insert(1, "160050029    |    CS333    |    AA")
 		viewList.insert(2, "160050056    |    CS333    |    AP")
 		viewList.insert(3, "160050057    |    CS333    |    AP")
-		viewList.grid(row=0, column=0)
+		viewList.grid(row=0, column=0, sticky="ns")
 
 		yscroll = Scrollbar(vGrade, command=viewList.yview, orient=VERTICAL)
 		yscroll.grid(row=0, column=1, sticky='nws')
@@ -196,9 +198,9 @@ def viewG():
 		viewList.configure(yscrollcommand=yscroll.set)
 		viewList.bind("<Double-Button-1>", updateG)
 
-		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(3,5), sticky="")
+		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
 	else:
-		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(3,5), sticky="")
+		vGrade.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
 	curFrame = 'v'
 
 	# for name, value in globals().copy().items():
@@ -222,6 +224,7 @@ def Logout():
 	url = 'http://localhost/logout.php'
 	try:
 		response = sess.post(url)
+		# print(response.text)
 	except ConnectionError as e:
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 	else:
@@ -287,5 +290,5 @@ def SignUp(uid, pword, passPh):
 		msgbox.showerror('Error', 'Some Error has Occurred !')
 	# print(key.publickey().exportKey())
 
-Start()
-# Home()
+# Start()
+Home()
