@@ -13,14 +13,13 @@ class BcD(tk.Tk):
 		self.uname = ""
 		self.eG = None
 		self.vG = None
-		self.Home()
+		self.footer = tk.Label(self, text='Smoke 1337 Everyday !', font='Helvetica 10', bg='black', fg='springGreen')
+		self.footer.grid(row=0, column=0, columnspan=4, sticky="ew")
+		self.start()
 
 	def start(self):
 		self.sess = requests.Session()
 		self.title("Welcome to BcD")
-		# self.resizable(0,0) #Remove Maximize
-		self.grid_columnconfigure(0, weight=1)
-		self.grid_columnconfigure(4, weight=1)
 
 		#Login
 		loginText = tk.Label(self, text='Login', font='Helvetica 16 bold', fg='darkblue')
@@ -38,7 +37,7 @@ class BcD(tk.Tk):
 
 		loginButton = tk.Button(self, text='Login',bg='blue',fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
 		loginButton.grid(columnspan=2, row=4, column=1, pady=(5,10))
-		# loginButton.bind('<Return>', lambda e: CheckLogin(nameBox.get(), pwordBox.get()))
+		# loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
 
 		ttk.Separator(self, orient="horizontal").grid(column=1, row=5, columnspan=3, sticky='nsew')
 
@@ -75,17 +74,20 @@ class BcD(tk.Tk):
 		x = (ws/2) - (h/2)
 		self.geometry("+%d+%d" % (x,h/4))
 
-	def checkEmpty(self, uid, pword):
+	def checkEmpty(self, uid, pword, passPh):
 		if(len(uid)==0):
-			msgbox.showerror('Error', 'Please Enter Username')
+			self.footer.config(text='Username field is Empty !', bg='red2', fg='white')
 			return 0
 		if(len(pword)==0):
-			msgbox.showerror('Error', 'Please Enter Password')
+			self.footer.config(text='Password field is Empty !', bg='red2', fg='white')
+			return 0
+		if(len(passPh)==0):
+			self.footer.config(text='PassPhrase field is Empty !', bg='red2', fg='white')
 			return 0
 		return 1
 
 	def SignUp(self, uid, pword, passPh):
-		if(not self.checkEmpty(uid, pword)):
+		if(not self.checkEmpty(uid, pword, passPh)):
 			return
 
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
@@ -93,10 +95,12 @@ class BcD(tk.Tk):
 		url = 'http://localhost/signup.php'
 		post_data = {'uid': uid, 'pass': pass_h}
 		try:
+			self.footer.config(text='Signing Up...', bg='black', fg='springGreen')
+			self.footer.update_idletasks()
 			response = requests.post(url, data=post_data)
 			text = response.text
-		except ConnectionError as e:
-			msgbox.showerror('Error', 'Some Error has Occurred !')
+		except (ConnectionError, requests.exceptions.RequestException) as e:
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 			return
 		
 		if text == "S":
@@ -104,14 +108,14 @@ class BcD(tk.Tk):
 			encrypted_key = key.exportKey(passphrase=passPh, pkcs=8)
 			with open(os.path.expanduser("~/"+uid+".pem"), "wb+") as f:
 				f.write(encrypted_key)
-			msgbox.showinfo('Success', 'Successfully Registered\n\nPlease Re-login')
+			self.footer.config(text='Successfully Registered. Please Re-Login', bg='black', fg='springGreen')
 		elif text == "M":
-			msgbox.showerror('Error', 'Username already taken !')
+			self.footer.config(text='Username already taken !', bg='red2', fg='white')
 		else:
-			msgbox.showerror('Error', 'Some Error has Occurred !')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 
 	def CheckLogin(self, uid, pword):
-		if(not self.checkEmpty(uid, pword)):
+		if(not self.checkEmpty(uid, pword, passPh='None')):
 			return
 
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
@@ -120,27 +124,31 @@ class BcD(tk.Tk):
 		post_data = {'uid': uid, 'pass': pass_h}
 		
 		try:
+			self.footer.config(text='Checking Login Information...', bg='black', fg='springGreen')
+			self.footer.update_idletasks()
 			response = self.sess.post(url, data=post_data)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			msgbox.showerror('Error', 'Some Error has Occurred !')
+			self.footer.config(text='Login Unsuccessful !', bg='red2', fg='white')
 			return
 
 		if text == "S":
 			self.uname = uid
 			self.Home()
 		elif text == "U":
-			msgbox.showerror('Error', 'Please SignUp !')
+			self.footer.config(text='Please SignUp !', bg='red2', fg='white')
 		else:
-			msgbox.showerror('Error', 'Incorrect Username or Password')
+			self.footer.config(text='Incorrect Username or Password !', bg='red2', fg='white')
 
 	def Home(self):
 		self.clear_widgets()
 		self.attributes('-zoomed', True)
 		self.title('Grades')
-		self.grid_rowconfigure(2, weight=1)
+		self.grid_rowconfigure(3, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 		self.grid_columnconfigure(0, weight=1)
+
+		self.footer.config(text='Succesfully Logged in', bg='black', fg='springGreen')
 
 		topF = tk.Frame(self)
 
@@ -151,18 +159,18 @@ class BcD(tk.Tk):
 		# u.grid(row=0, column=1, padx=(0,100), pady=(5,5))
 		u.pack(side='left', expand=False)
 
-		topF.grid(row=0, column=0, padx=(10,0), pady=(5,5), sticky="w")
+		topF.grid(row=1, column=0, padx=(10,0), pady=(5,5), sticky="w")
 		logoutButton = tk.Button(self, text='LogOut', bg='brown', fg='white', command=self.Logout)
-		logoutButton.grid(row=0, column=1, padx=(0,10), pady=(5,5), sticky="e")
+		logoutButton.grid(row=1, column=1, padx=(0,10), pady=(5,5), sticky="e")
 
-		ttk.Separator(self, orient="horizontal").grid(column=0, row=1, columnspan=2, sticky='nsew')
+		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 
 		enterButton = tk.Button(self, text='Enter Grades', bg='blue', fg='white', command=self.enterG)
-		enterButton.grid(row=1, column=0, padx=(40,5), pady=(5,2), sticky="e")
+		enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
 		viewButton = tk.Button(self, text='View Grades', bg='blue', fg='white', command=self.viewG)
-		viewButton.grid(row=1, column=1, padx=(5,40), pady=(5,2), sticky="w")
+		viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
 
-		ttk.Separator(self, orient="horizontal").grid(column=0, row=2, columnspan=2, sticky='nsew')
+		ttk.Separator(self, orient="horizontal").grid(row=3, column=0, columnspan=2, sticky='nsew')
 
 	def enterG(self):
 		self.geometry("")
@@ -179,9 +187,9 @@ class BcD(tk.Tk):
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
 			enterGBut.grid(row=1, column=0, columnspan=2, pady=(0,0), sticky="ns")
-			self.eG.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
+			self.eG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
 		else:
-			self.eG.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
+			self.eG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
 
 	def viewG(self):
 		self.geometry("")
@@ -217,9 +225,9 @@ class BcD(tk.Tk):
 			viewList.configure(yscrollcommand=yscroll.set)
 			viewList.bind("<Double-Button-1>", self.updateG)
 
-			self.vG.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
+			self.vG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
 		else:
-			self.vG.grid(row=2, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
+			self.vG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
 		print(grades)
@@ -246,10 +254,12 @@ class BcD(tk.Tk):
 			self.uname = ""
 			self.eG = None
 			self.vG = None
+			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen')
 			self.start()
 
 	def clear_widgets(self):
 		for widget in self.winfo_children():
-			widget.destroy()
+			if widget != self.footer:
+				widget.destroy()
 
 BcD().mainloop()
