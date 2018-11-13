@@ -19,6 +19,8 @@ class BcD(tk.Tk):
 
 	def start(self):
 		self.geometry("")
+		self.update_idletasks()
+		
 		self.sess = requests.Session()
 		self.title("Welcome to BcD")
 		self.grid_columnconfigure(0, weight=1)
@@ -26,27 +28,27 @@ class BcD(tk.Tk):
 
 		#Login
 		loginText = tk.Label(self, text='Login', font='Helvetica 16 bold', fg='darkblue')
-		loginText.grid(row=1, columnspan=2, column=0, pady=(5,10))
+		loginText.grid(row=1, column=0, columnspan=2, pady=(10,10))
 
 		name = tk.Label(self, text='Username')
 		pword = tk.Label(self, text='Password')
-		name.grid(row=2, column=0, padx=(0,5), pady=(5,5), sticky="e")
-		pword.grid(row=3, column=0, padx=(0,5), pady=(5,5), sticky="e")
+		name.grid(row=2, column=0, padx=(30,5), pady=(5,5), sticky="e")
+		pword.grid(row=3, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
 		nameBox = tk.Entry(self)
 		pwordBox = tk.Entry(self, show='*')
-		nameBox.grid(row=2, column=1, padx=(0,0), pady=(5,5), sticky="w")
-		pwordBox.grid(row=3, column=1, padx=(0,0), pady=(5,5), sticky="w")
+		nameBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
+		pwordBox.grid(row=3, column=1, padx=(0,30), pady=(5,5), sticky="w")
 
 		loginButton = tk.Button(self, text='Login',bg='blue',fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
-		loginButton.grid(columnspan=2, row=4, column=0, pady=(5,10))
-		# loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
+		loginButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
+		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
 
-		ttk.Separator(self, orient="horizontal").grid(column=0, row=5, columnspan=3, sticky='nsew')
+		ttk.Separator(self, orient="horizontal").grid(column=0, row=5, columnspan=2, sticky='nsew')
 
 		#SignUp
 		signUpText = tk.Label(self, text='Sign Up', font='Helvetica 16 bold', fg='brown')
-		signUpText.grid(row=5, columnspan=2, column=0, pady=(10,10))
+		signUpText.grid(row=5, column=0, columnspan=2, pady=(10,10))
 
 		SuName = tk.Label(self, text='Choose Username')
 		SuPword = tk.Label(self, text='Enter Password')
@@ -55,18 +57,18 @@ class BcD(tk.Tk):
 
 		SuNameBox = tk.Entry(self)
 		SuPwordBox = tk.Entry(self, show='*')
-		SuNameBox.grid(row=6, column=1, padx=(0,0), pady=(5,1), sticky="w")
-		SuPwordBox.grid(row=7, column=1, padx=(0,0), pady=(1,5), sticky="w")
+		SuNameBox.grid(row=6, column=1, padx=(0,30), pady=(5,1), sticky="w")
+		SuPwordBox.grid(row=7, column=1, padx=(0,30), pady=(1,5), sticky="w")
 
 		SuPP = tk.Label(self, text='Enter PassPhrase')
-		SuPP.grid(row=8, column=0, padx=(30,0), pady=(5,5), sticky="e")
+		SuPP.grid(row=8, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
 		PPframe = tk.Frame(self)
 
 		passPh = tk.Entry(PPframe, show='*')
 		passPh.grid(row=0, column=0, sticky="w")
 		img = tk.PhotoImage(file='q.gif')
-		PPhelp = tk.Button(PPframe, image=img, command=lambda :msgbox.showinfo('Info','This PassPhrase will be used for generating your Private Key'))
+		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Info','This PassPhrase will be used for generating your Private Key'))
 		PPhelp.image = img
 		PPhelp.grid(row=0, column=1, sticky="w")
 
@@ -77,8 +79,9 @@ class BcD(tk.Tk):
 
 		self.update_idletasks()
 		h = self.winfo_reqheight()
+		w = self.winfo_reqwidth()
 		ws = self.winfo_screenwidth()
-		x = (ws/2) - (h/2)
+		x = (ws/2) - (w/2)
 		self.geometry("+%d+%d" % (x,h/4))
 
 	def checkEmpty(self, uid, pword, passPh):
@@ -257,11 +260,12 @@ class BcD(tk.Tk):
 			response = self.sess.post(url)
 			# print(response.text)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			msgbox.showerror('Error', 'Some Error has Occurred !')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 		else:
 			self.attributes('-zoomed', False)
 			self.clear_widgets()
 			self.uname = ""
+			self.sess = None
 			self.eG = None
 			self.vG = None
 			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen')
