@@ -18,52 +18,53 @@ class BcD(tk.Tk):
 		self.start()
 
 	def start(self):
-		self.geometry("")
-		self.update_idletasks()
 		
 		self.sess = requests.Session()
 		self.title("Welcome to BcD")
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
 
-		#Login
-		loginText = tk.Label(self, text='Login', font='Helvetica 16 bold', fg='darkblue')
-		loginText.grid(row=1, column=0, columnspan=2, pady=(10,10))
+		login = tk.Frame(self)
+		login.grid(row=1, column=0, columnspan=2, pady=(5,5))
+		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
+		signup = tk.Frame(self)
+		signup.grid(row=2, column=0, columnspan=2, pady=(5,5))
 
-		name = tk.Label(self, text='Username')
-		pword = tk.Label(self, text='Password')
-		name.grid(row=2, column=0, padx=(30,5), pady=(5,5), sticky="e")
-		pword.grid(row=3, column=0, padx=(30,5), pady=(5,5), sticky="e")
+		#login
+		loginText = tk.Label(login, text='Login', font='MSSerif 16 bold', fg='darkblue')
+		loginText.grid(row=0, column=0, columnspan=2, pady=(10,10))
+		name = tk.Label(login, text='Username')
+		pword = tk.Label(login, text='Password')
+		name.grid(row=1, column=0, padx=(30,5), pady=(5,5), sticky="e")
+		pword.grid(row=2, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
-		nameBox = tk.Entry(self)
-		pwordBox = tk.Entry(self, show='*')
-		nameBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
-		pwordBox.grid(row=3, column=1, padx=(0,30), pady=(5,5), sticky="w")
+		nameBox = tk.Entry(login)
+		pwordBox = tk.Entry(login, show='*')
+		nameBox.grid(row=1, column=1, padx=(0,30), pady=(5,5), sticky="w")
+		pwordBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
 
-		loginButton = tk.Button(self, text='Login',bg='blue',fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
-		loginButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
+		loginButton = tk.Button(login, text='Login', bg='blue', fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
+		loginButton.grid(row=3, column=0, columnspan=2, pady=(5,10))
 		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
 
-		ttk.Separator(self, orient="horizontal").grid(column=0, row=5, columnspan=2, sticky='nsew')
+		#Sign Up
+		signUpText = tk.Label(signup, text='Sign Up', font='Helvetica 16 bold', fg='brown')
+		signUpText.grid(row=0, column=0, columnspan=2, pady=(10,10))
 
-		#SignUp
-		signUpText = tk.Label(self, text='Sign Up', font='Helvetica 16 bold', fg='brown')
-		signUpText.grid(row=5, column=0, columnspan=2, pady=(10,10))
+		SuName = tk.Label(signup, text='Choose Username')
+		SuPword = tk.Label(signup, text='Enter Password')
+		SuName.grid(row=1, column=0, padx=(30,5), pady=(5,1), sticky="e")
+		SuPword.grid(row=2, column=0, padx=(30,5), pady=(1,5), sticky="e")
 
-		SuName = tk.Label(self, text='Choose Username')
-		SuPword = tk.Label(self, text='Enter Password')
-		SuName.grid(row=6, column=0, padx=(30,5), pady=(5,1), sticky="e")
-		SuPword.grid(row=7, column=0, padx=(30,5), pady=(1,5), sticky="e")
+		SuNameBox = tk.Entry(signup)
+		SuPwordBox = tk.Entry(signup, show='*')
+		SuNameBox.grid(row=1, column=1, padx=(0,30), pady=(5,1), sticky="w")
+		SuPwordBox.grid(row=2, column=1, padx=(0,30), pady=(1,5), sticky="w")
 
-		SuNameBox = tk.Entry(self)
-		SuPwordBox = tk.Entry(self, show='*')
-		SuNameBox.grid(row=6, column=1, padx=(0,30), pady=(5,1), sticky="w")
-		SuPwordBox.grid(row=7, column=1, padx=(0,30), pady=(1,5), sticky="w")
+		SuPP = tk.Label(signup, text='Enter PassPhrase')
+		SuPP.grid(row=3, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
-		SuPP = tk.Label(self, text='Enter PassPhrase')
-		SuPP.grid(row=8, column=0, padx=(30,5), pady=(5,5), sticky="e")
-
-		PPframe = tk.Frame(self)
+		PPframe = tk.Frame(signup)
 
 		passPh = tk.Entry(PPframe, show='*')
 		passPh.grid(row=0, column=0, sticky="w")
@@ -72,10 +73,10 @@ class BcD(tk.Tk):
 		PPhelp.image = img
 		PPhelp.grid(row=0, column=1, sticky="w")
 
-		PPframe.grid(row=8, column=1, padx=(0,30), sticky="w")
+		PPframe.grid(row=3, column=1, padx=(0,30), sticky="w")
 
-		SignUpButton = tk.Button(self, text='Sign Up', bg='brown', fg='white', command=lambda: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
-		SignUpButton.grid(row=9, column=0, columnspan=2, pady=(5,10))
+		SignUpButton = tk.Button(signup, text='Sign Up', bg='brown', fg='white', command=lambda: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
+		SignUpButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
 
 		self.update_idletasks()
 		h = self.winfo_reqheight()
@@ -157,18 +158,14 @@ class BcD(tk.Tk):
 		self.attributes('-zoomed', True)
 		self.title('Grades')
 		self.grid_rowconfigure(3, weight=1)
-		self.grid_columnconfigure(1, weight=1)
-		self.grid_columnconfigure(0, weight=1)
 
 		self.footer.config(text='Succesfully Logged in', bg='black', fg='springGreen')
 
 		topF = tk.Frame(self)
 
 		top = tk.Label(topF, text='Signed In as : ')
-		# top.grid(row=0, column=0, padx=(20,0), pady=(5,5), sticky="ew")
 		top.pack(side='left', expand=False)
 		u = tk.Label(topF, text=self.uname, font='Helvetica 10 bold', bg='lightblue')
-		# u.grid(row=0, column=1, padx=(0,100), pady=(5,5))
 		u.pack(side='left', expand=False)
 
 		topF.grid(row=1, column=0, padx=(10,0), pady=(5,5), sticky="w")
@@ -192,17 +189,16 @@ class BcD(tk.Tk):
 
 		if self.eG == None:
 			self.eG = tk.Frame(self)
-			# eGrade.grid_columnconfigure(0, weight=1) # Along with sticky=ewns will resize to full window
-			self.eG.grid_rowconfigure(0, weight=1)
+			self.eG.grid_columnconfigure(0, weight=1) # Along with sticky=ewns will resize to full window
 
 			enterGrades = scrolledtext.ScrolledText(self.eG, font='Times 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
-			enterGrades.grid(row=0, column=0, sticky="ewns")
+			enterGrades.pack(expand=True, fill="both")
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
-			enterGBut.grid(row=1, column=0, columnspan=2, pady=(0,0), sticky="ns")
-			self.eG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
+			enterGBut.pack()
+			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
 		else:
-			self.eG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,3), sticky="ns")
+			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
 
 	def viewG(self):
 		self.geometry("")
@@ -212,8 +208,6 @@ class BcD(tk.Tk):
 
 		if self.vG == None:
 			self.vG = tk.Frame(self)
-			# vGrade.grid_columnconfigure(0, weight=1)
-			self.vG.grid_rowconfigure(0, weight=1)
 
 			viewList = ttk.Treeview(self.vG, height=15)
 			viewList['show'] = 'headings'
@@ -230,17 +224,17 @@ class BcD(tk.Tk):
 			viewList.insert("", "end", values=("160050029", "Rishabh Raj", "CS333", "AA"))
 			viewList.insert("", "end", values=("160050057", "Kumar Saurav", "CS333", "AP"))
 			viewList.insert("", "end", values=("160050056", "Kumar Saunack", "CS333", "AP"))
-			viewList.grid(row=0, column=0, sticky="ns")
+			viewList.pack(side="left", expand=True, fill="both")
 
 			yscroll = tk.Scrollbar(self.vG, command=viewList.yview, orient="vertical")
-			yscroll.grid(row=0, column=1, sticky='ns')
+			yscroll.pack(side="right", fill="y")
 
 			viewList.configure(yscrollcommand=yscroll.set)
 			viewList.bind("<Double-Button-1>", self.updateG)
 
-			self.vG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
+			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 		else:
-			self.vG.grid(row=3, column=0, columnspan=2, padx=(10,10), pady=(1,7), sticky="ns")
+			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
 		print(grades)
