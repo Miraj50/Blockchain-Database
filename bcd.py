@@ -31,16 +31,17 @@ class BcD(tk.Tk):
 		signup.grid(row=2, column=0, columnspan=2, pady=(5,5))
 
 		#login
-		loginText = tk.Label(login, text='Login', font='MSSerif 16 bold', fg='darkblue')
+		loginText = tk.Label(login, text='Login', font='Fixedsys 16 bold', fg='darkblue')
 		loginText.grid(row=0, column=0, columnspan=2, pady=(10,10))
-		name = tk.Label(login, text='Username')
-		pword = tk.Label(login, text='Password')
+		name = tk.Label(login, text='Username', font='Verdana 11')
+		pword = tk.Label(login, text='Password', font='Verdana 11')
 		name.grid(row=1, column=0, padx=(30,5), pady=(5,5), sticky="e")
 		pword.grid(row=2, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
 		nameBox = tk.Entry(login)
 		pwordBox = tk.Entry(login, show='*')
 		nameBox.grid(row=1, column=1, padx=(0,30), pady=(5,5), sticky="w")
+		nameBox.focus()
 		pwordBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
 
 		loginButton = tk.Button(login, text='Login', bg='blue', fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
@@ -48,11 +49,11 @@ class BcD(tk.Tk):
 		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
 
 		#Sign Up
-		signUpText = tk.Label(signup, text='Sign Up', font='Helvetica 16 bold', fg='brown')
+		signUpText = tk.Label(signup, text='Sign Up', font='Fixedsys 16 bold', fg='brown')
 		signUpText.grid(row=0, column=0, columnspan=2, pady=(10,10))
 
-		SuName = tk.Label(signup, text='Choose Username')
-		SuPword = tk.Label(signup, text='Enter Password')
+		SuName = tk.Label(signup, text='Choose Username', font='Verdana 11')
+		SuPword = tk.Label(signup, text='Enter Password', font='Verdana 11')
 		SuName.grid(row=1, column=0, padx=(30,5), pady=(5,1), sticky="e")
 		SuPword.grid(row=2, column=0, padx=(30,5), pady=(1,5), sticky="e")
 
@@ -61,7 +62,7 @@ class BcD(tk.Tk):
 		SuNameBox.grid(row=1, column=1, padx=(0,30), pady=(5,1), sticky="w")
 		SuPwordBox.grid(row=2, column=1, padx=(0,30), pady=(1,5), sticky="w")
 
-		SuPP = tk.Label(signup, text='Enter PassPhrase')
+		SuPP = tk.Label(signup, text='Enter PassPhrase', font='Verdana 11')
 		SuPP.grid(row=3, column=0, padx=(30,5), pady=(5,5), sticky="e")
 
 		PPframe = tk.Frame(signup)
@@ -77,6 +78,7 @@ class BcD(tk.Tk):
 
 		SignUpButton = tk.Button(signup, text='Sign Up', bg='brown', fg='white', command=lambda: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
 		SignUpButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
+		SignUpButton.bind('<Return>', lambda e: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
 
 		self.update_idletasks()
 		h = self.winfo_reqheight()
