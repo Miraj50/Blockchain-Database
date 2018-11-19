@@ -14,12 +14,11 @@ class BcD(tk.Tk):
 		self.eG = None
 		self.vG = None
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
-		self.footer.grid(row=0, column=0, columnspan=4, sticky="nsew")
-		self.start()
+		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
+		self.Start()
 
-	def start(self):
+	def Start(self):
 		
-		self.sess = requests.Session()
 		self.title("Welcome to BcD")
 		self.grid_columnconfigure(0, weight=1)
 		self.grid_columnconfigure(1, weight=1)
@@ -70,7 +69,7 @@ class BcD(tk.Tk):
 		passPh = tk.Entry(PPframe, show='*')
 		passPh.grid(row=0, column=0, sticky="w")
 		img = tk.PhotoImage(file='q.gif')
-		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Info','This PassPhrase will be used for generating your Private Key'))
+		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Help','This PassPhrase will be used for generating your Private Key'))
 		PPhelp.image = img
 		PPhelp.grid(row=0, column=1, sticky="w")
 
@@ -130,6 +129,8 @@ class BcD(tk.Tk):
 	def CheckLogin(self, uid, pword):
 		if(not self.checkEmpty(uid, pword, passPh='None')):
 			return
+
+		self.sess = requests.Session()
 
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
 
@@ -254,7 +255,6 @@ class BcD(tk.Tk):
 		url = 'http://localhost/logout.php'
 		try:
 			response = self.sess.post(url)
-			# print(response.text)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 		else:
@@ -265,11 +265,20 @@ class BcD(tk.Tk):
 			self.eG = None
 			self.vG = None
 			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen')
-			self.start()
+			self.Start()
 
 	def clear_widgets(self):
 		for widget in self.winfo_children():
 			if widget != self.footer:
 				widget.destroy()
 
-BcD().mainloop()
+
+def quit():
+	if app.sess is not None:
+		app.Logout()
+	else:
+		app.destroy()
+
+app = BcD()
+app.protocol("WM_DELETE_WINDOW", quit)
+app.mainloop()
