@@ -43,7 +43,7 @@ class BcD(tk.Tk):
 		nameBox.focus()
 		pwordBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
 
-		loginButton = tk.Button(login, text='Login', bg='blue', fg='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
+		loginButton = tk.Button(login, text='Login', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
 		loginButton.grid(row=3, column=0, columnspan=2, pady=(5,10))
 		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
 
@@ -75,7 +75,7 @@ class BcD(tk.Tk):
 
 		PPframe.grid(row=3, column=1, padx=(0,30), sticky="w")
 
-		SignUpButton = tk.Button(signup, text='Sign Up', bg='brown', fg='white', command=lambda: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
+		SignUpButton = tk.Button(signup, text='Sign Up', bg='brown', fg='white', activebackground='brown4', activeforeground='white', command=lambda: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
 		SignUpButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
 		SignUpButton.bind('<Return>', lambda e: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
 
@@ -172,14 +172,14 @@ class BcD(tk.Tk):
 		u.pack(side='left', expand=False)
 
 		topF.grid(row=1, column=0, padx=(10,0), pady=(5,5), sticky="w")
-		logoutButton = tk.Button(self, text='LogOut', bg='brown', fg='white', command=self.Logout)
+		logoutButton = tk.Button(self, text='LogOut', bg='brown', fg='white', activebackground='brown4', activeforeground='white', command=self.Logout)
 		logoutButton.grid(row=1, column=1, padx=(0,10), pady=(5,5), sticky="e")
 
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 
-		enterButton = tk.Button(self, text='Enter Grades', bg='blue', fg='white', command=self.enterG)
+		enterButton = tk.Button(self, text='Enter Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.enterG)
 		enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
-		viewButton = tk.Button(self, text='View Grades', bg='blue', fg='white', command=self.viewG)
+		viewButton = tk.Button(self, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.viewG)
 		viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
 
 		ttk.Separator(self, orient="horizontal").grid(row=3, column=0, columnspan=2, sticky='nsew')
