@@ -158,7 +158,7 @@ class BcD(tk.Tk):
 
 		if text == "S":
 			self.uname = uid
-			self.Home()
+			self.Home(stud)
 		elif text == "U":
 			self.footer.config(text='Please SignUp !', bg='red2', fg='white')
 		elif text == "D":
@@ -166,7 +166,7 @@ class BcD(tk.Tk):
 		else:
 			self.footer.config(text='Incorrect Username or Password !', bg='red2', fg='white')
 
-	def Home(self):
+	def Home(self, stud):
 		self.clear_widgets()
 		self.attributes('-zoomed', True)
 		self.title('Grades')
@@ -187,8 +187,9 @@ class BcD(tk.Tk):
 
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 
-		enterButton = tk.Button(self, text='Enter Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.enterG)
-		enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
+		if stud == 0:
+			enterButton = tk.Button(self, text='Enter Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.enterG)
+			enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
 		viewButton = tk.Button(self, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.viewG)
 		viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
 
