@@ -43,13 +43,22 @@ class BcD(tk.Tk):
 		nameBox.focus()
 		pwordBox.grid(row=2, column=1, padx=(0,30), pady=(5,5), sticky="w")
 
-		loginButton = tk.Button(login, text='Login', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get()))
-		loginButton.grid(row=3, column=0, columnspan=2, pady=(5,10))
-		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get()))
+		stud = tk.IntVar()
+		stud.set(0)
+		checkStud = tk.Checkbutton(login, text='Login as Student', font='Fixedsys 8', variable=stud, onvalue=1, offvalue=0)
+		checkStud.grid(row=3, column=1, padx=(0,30), sticky="w")
+
+		loginButton = tk.Button(login, text='Login', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get(), stud.get()))
+		loginButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
+		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get(), stud.get()))
 
 		#Sign Up
-		signUpText = tk.Label(signup, text='Sign Up', font='Fixedsys 16 bold', fg='brown')
-		signUpText.grid(row=0, column=0, columnspan=2, pady=(10,10))
+		signUpTextF = tk.Frame(signup)
+		signUpText = tk.Label(signUpTextF, text='Sign Up', font='Fixedsys 16 bold', fg='brown')
+		instr_only = tk.Label(signUpTextF, text='(For Instructors only)', font='Verdana 8 italic', fg='gray25')
+		signUpText.grid(row=0, column=0)
+		instr_only.grid(row=1, column=0)
+		signUpTextF.grid(row=0, column=0, columnspan=2, pady=(10,10))
 
 		SuName = tk.Label(signup, text='Choose Username', font='Verdana 11')
 		SuPword = tk.Label(signup, text='Enter Password', font='Verdana 11')
@@ -126,16 +135,17 @@ class BcD(tk.Tk):
 		else:
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 
-	def CheckLogin(self, uid, pword):
+	def CheckLogin(self, uid, pword, stud):
 		if(not self.checkEmpty(uid, pword, passPh='None')):
 			return
 
+		# print(stud)
 		self.sess = requests.Session()
 
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
 
 		url = 'http://localhost/login.php'
-		post_data = {'uid': uid, 'pass': pass_h}
+		post_data = {'uid': uid, 'pass': pass_h, 'student': stud}
 		
 		try:
 			self.footer.config(text='Checking Login Information...', bg='black', fg='springGreen')
@@ -274,7 +284,7 @@ class BcD(tk.Tk):
 
 
 def quit():
-	if app.sess is not None:
+	if app.uname != "":
 		app.Logout()
 	else:
 		app.destroy()
