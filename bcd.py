@@ -5,6 +5,7 @@ import tkinter.ttk as ttk
 import requests
 import os, hashlib
 from Crypto.PublicKey import RSA
+import json
 
 class BcD(tk.Tk):
 	def __init__(self):
@@ -268,26 +269,37 @@ class BcD(tk.Tk):
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
-		post_data = []
+		post_data = {'data':[]}
 		gradeList = grades.split('\n')
+		num = 0
 		for row in gradeList:
 			temp = row.split()
 			if len(temp) !=3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
 				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 				return
 			else:
-				post_data.append({'uid':temp[0], 'course':temp[1], 'grade':temp[2]})
+				post_data['data'].append({'uid':temp[0], 'course':temp[1], 'grade':temp[2]})
+				num = num+1
 
-		print(post_data)
+		post_data['count'] = num
+		self.sess = requests.Session()
+
 		url = 'http://localhost/insert.php'
 		try:
 			self.footer.config(text='Submitting Grades...', bg='black', fg='springGreen')
-			response = self.sess.post(url, data=post_data)
+			response = self.sess.post(url, json=post_data)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 			return
 
+		if text == "N":
+			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
+		elif text == "D":
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+		elif text == "S":
+			self.footer.config(text='Successfully Entered Grades', bg='black', fg='springGreen')
+			self.eG.winfo_children()[0].update()
 
 	def updateG(self, event):
 		w = event.widget
