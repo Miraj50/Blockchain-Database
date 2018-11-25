@@ -15,6 +15,7 @@ class BcD(tk.Tk):
 		self.vG = None
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
+		# self.Home(0)
 		self.Start()
 
 	def Start(self):
@@ -187,11 +188,14 @@ class BcD(tk.Tk):
 
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 
-		if stud == 0:
+		viewButton = tk.Button(self, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.viewG)
+
+		if stud == 0: # an instructor
 			enterButton = tk.Button(self, text='Enter Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.enterG)
 			enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
-		viewButton = tk.Button(self, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.viewG)
-		viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
+			viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
+		else: # a student
+			viewButton.grid(row=2, column=0, columnspan=2, pady=(5,2))
 
 		ttk.Separator(self, orient="horizontal").grid(row=3, column=0, columnspan=2, sticky='nsew')
 
@@ -205,7 +209,7 @@ class BcD(tk.Tk):
 			self.eG = tk.Frame(self)
 			self.eG.grid_columnconfigure(0, weight=1) # Along with sticky=ewns will resize to full window
 
-			enterGrades = scrolledtext.ScrolledText(self.eG, font='Times 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
+			enterGrades = scrolledtext.ScrolledText(self.eG, font='Verdana 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
 			enterGrades.pack(expand=True, fill="both")
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
@@ -223,6 +227,22 @@ class BcD(tk.Tk):
 		if self.vG == None:
 			self.vG = tk.Frame(self)
 
+			url = 'http://localhost/view.php'
+			
+			try:
+				self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen')
+				response = self.sess.post(url)
+				text = response.text
+			except (ConnectionError, requests.exceptions.RequestException) as e:
+				self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+				return
+
+			if text == "D":
+				self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+				self.vG = None
+				return
+			self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
+
 			viewList = ttk.Treeview(self.vG, height=15)
 			viewList['show'] = 'headings'
 			viewList['columns'] = ('Roll', 'Name', 'Course', 'Grade')
@@ -235,9 +255,9 @@ class BcD(tk.Tk):
 			viewList.heading("#4", text='Grade', anchor='w')
 			viewList.column("#4", stretch="no", width=100)
 
-			viewList.insert("", "end", values=("160050029", "Rishabh Raj", "CS333", "AA"))
-			viewList.insert("", "end", values=("160050057", "Kumar Saurav", "CS333", "AP"))
-			viewList.insert("", "end", values=("160050056", "Kumar Saunack", "CS333", "AP"))
+			for row in text.split('&'):
+				viewList.insert("", "end", values=row.split())
+
 			viewList.pack(side="left", expand=True, fill="both")
 
 			yscroll = tk.Scrollbar(self.vG, command=viewList.yview, orient="vertical")
