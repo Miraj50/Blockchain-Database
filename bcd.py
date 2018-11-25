@@ -15,8 +15,8 @@ class BcD(tk.Tk):
 		self.vG = None
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
-		# self.Home(0)
-		self.Start()
+		self.Home(0)
+		# self.Start()
 
 	def Start(self):
 		
@@ -140,7 +140,6 @@ class BcD(tk.Tk):
 		if(not self.checkEmpty(uid, pword, passPh='None')):
 			return
 
-		# print(stud)
 		self.sess = requests.Session()
 
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
@@ -212,7 +211,7 @@ class BcD(tk.Tk):
 			enterGrades = scrolledtext.ScrolledText(self.eG, font='Verdana 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
 			enterGrades.pack(expand=True, fill="both")
 
-			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
+			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', activebackground='forestgreen' ,activeforeground='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
 			enterGBut.pack()
 			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
 		else:
@@ -225,10 +224,8 @@ class BcD(tk.Tk):
 			self.eG.grid_forget()
 
 		if self.vG == None:
-			self.vG = tk.Frame(self)
 
 			url = 'http://localhost/view.php'
-			
 			try:
 				self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen')
 				response = self.sess.post(url)
@@ -239,10 +236,10 @@ class BcD(tk.Tk):
 
 			if text == "D":
 				self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
-				self.vG = None
 				return
 			self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
 
+			self.vG = tk.Frame(self)
 			viewList = ttk.Treeview(self.vG, height=15)
 			viewList['show'] = 'headings'
 			viewList['columns'] = ('Roll', 'Name', 'Course', 'Grade')
@@ -271,7 +268,26 @@ class BcD(tk.Tk):
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
-		print(grades)
+		post_data = []
+		gradeList = grades.split('\n')
+		for row in gradeList:
+			temp = row.split()
+			if len(temp) !=3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
+				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
+				return
+			else:
+				post_data.append({'uid':temp[0], 'course':temp[1], 'grade':temp[2]})
+
+		print(post_data)
+		url = 'http://localhost/insert.php'
+		try:
+			self.footer.config(text='Submitting Grades...', bg='black', fg='springGreen')
+			response = self.sess.post(url, data=post_data)
+			text = response.text
+		except (ConnectionError, requests.exceptions.RequestException) as e:
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			return
+
 
 	def updateG(self, event):
 		w = event.widget
@@ -302,7 +318,6 @@ class BcD(tk.Tk):
 		for widget in self.winfo_children():
 			if widget != self.footer:
 				widget.destroy()
-
 
 def quit():
 	if app.uname != "":
