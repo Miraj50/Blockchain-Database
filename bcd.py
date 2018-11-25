@@ -5,7 +5,6 @@ import tkinter.ttk as ttk
 import requests
 import os, hashlib
 from Crypto.PublicKey import RSA
-import json
 
 class BcD(tk.Tk):
 	def __init__(self):
@@ -16,8 +15,8 @@ class BcD(tk.Tk):
 		self.vG = None
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
-		self.Home(0)
-		# self.Start()
+		# self.Home(0)
+		self.Start()
 
 	def Start(self):
 		
@@ -254,7 +253,7 @@ class BcD(tk.Tk):
 			viewList.column("#4", stretch="no", width=100)
 
 			for row in text.split('&'):
-				viewList.insert("", "end", values=row.split())
+				viewList.insert("", "end", values=row.split('%'))
 
 			viewList.pack(side="left", expand=True, fill="both")
 
@@ -282,11 +281,12 @@ class BcD(tk.Tk):
 				num = num+1
 
 		post_data['count'] = num
-		self.sess = requests.Session()
+		# self.sess = requests.Session()
 
 		url = 'http://localhost/insert.php'
 		try:
 			self.footer.config(text='Submitting Grades...', bg='black', fg='springGreen')
+			self.footer.update_idletasks()
 			response = self.sess.post(url, json=post_data)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
@@ -299,7 +299,7 @@ class BcD(tk.Tk):
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 		elif text == "S":
 			self.footer.config(text='Successfully Entered Grades', bg='black', fg='springGreen')
-			self.eG.winfo_children()[0].update()
+			self.eG.winfo_children()[0].winfo_children()[1].delete("1.0", "end")
 
 	def updateG(self, event):
 		w = event.widget
@@ -308,7 +308,23 @@ class BcD(tk.Tk):
 
 		uG = simpledialog.askstring('Update grade', 'Enter New Grade', parent=self, initialvalue=item[3])
 
-		self.vG.winfo_children()[0].item(idx, values=(item[0], item[1], item[2], uG))
+		post_data = {'uid':item[0], 'course':item[2], 'grade':uG}
+
+		url = 'http://localhost/update.php'
+		try:
+			self.footer.config(text='Updating Grade...', bg='black', fg='springGreen')
+			self.footer.update_idletasks()
+			response = self.sess.post(url, data=post_data)
+			text = response.text
+		except (ConnectionError, requests.exceptions.RequestException) as e:
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			return
+
+		if text == "D":
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+		elif text == "S":
+			self.footer.config(text='Successfully Updated Grade', bg='black', fg='springGreen')
+			self.vG.winfo_children()[0].item(idx, values=(item[0], item[1], item[2], uG))
 
 	def Logout(self):
 		url = 'http://localhost/logout.php'
