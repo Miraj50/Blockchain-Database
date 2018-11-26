@@ -213,6 +213,7 @@ class BcD(tk.Tk):
 
 			enterGrades = scrolledtext.ScrolledText(self.eG, font='Verdana 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
 			enterGrades.pack(expand=True, fill="both")
+			self.eG.winfo_children()[0].winfo_children()[1].tag_configure("error", foreground="red")
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', activebackground='forestgreen' ,activeforeground='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
 			enterGBut.pack()
@@ -313,7 +314,9 @@ class BcD(tk.Tk):
 			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 		elif text[0] == "D":
 			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white')
-			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, float(text[1:])+1.0)
+			textBox = self.eG.winfo_children()[0].winfo_children()[1]
+			textBox.delete(1.0, float(text[1:])+1.0)
+			textBox.tag_add("error", "1.0", "2.0")
 		elif text == "S":
 			self.footer.config(text='Grades Entered Successfully', bg='black', fg='springGreen')
 			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, "end")
