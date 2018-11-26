@@ -238,7 +238,7 @@ class BcD(tk.Tk):
 
 	def viewG(self, flag):
 		self.geometry("")
-		# self.sess = requests.Session()
+
 		if self.eG != None:
 			self.eG.grid_forget()
 
@@ -246,7 +246,7 @@ class BcD(tk.Tk):
 			if self.vG == None:
 
 				text = self.getGrades()
-				self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
+				self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen')
 
 				self.vG = tk.Frame(self)
 				viewList = ttk.Treeview(self.vG, height=15)
@@ -281,7 +281,7 @@ class BcD(tk.Tk):
 			viewList.delete(*viewList.get_children())
 			for row in text.split('&'):
 				viewList.insert("", "end", values=row.split('%'))
-			self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
+			self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen')
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
@@ -298,7 +298,6 @@ class BcD(tk.Tk):
 				num = num+1
 
 		post_data['count'] = num
-		# self.sess = requests.Session()
 
 		url = 'http://localhost/insert.php'
 		try:
@@ -316,7 +315,7 @@ class BcD(tk.Tk):
 			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white')
 			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, float(text[1:])+1.0)
 		elif text == "S":
-			self.footer.config(text='Successfully Entered Grades', bg='black', fg='springGreen')
+			self.footer.config(text='Grades Entered Successfully', bg='black', fg='springGreen')
 			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, "end")
 			# Put reload button
 			ref = tk.PhotoImage(file='reload.png')
@@ -346,7 +345,7 @@ class BcD(tk.Tk):
 		if text == "D":
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 		elif text == "S":
-			self.footer.config(text='Successfully Updated Grade', bg='black', fg='springGreen')
+			self.footer.config(text='Grade Updated Successfully', bg='black', fg='springGreen')
 			self.vG.winfo_children()[0].item(idx, values=(item[0], item[1], item[2], uG))
 
 	def Logout(self):
