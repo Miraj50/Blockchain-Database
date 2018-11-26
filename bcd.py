@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.messagebox as msgbox
 from tkinter import scrolledtext, simpledialog
 import tkinter.ttk as ttk
-import requests
+import requests, time
 import os, hashlib
 from Crypto.PublicKey import RSA
 
@@ -187,14 +187,17 @@ class BcD(tk.Tk):
 
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 
-		viewButton = tk.Button(self, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.viewG)
+		viewButF = tk.Frame(self)
+
+		viewButton = tk.Button(viewButF, text='View Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=lambda: self.viewG(0))
+		viewButton.grid(row=0, column=0)
 
 		if stud == 0: # an instructor
 			enterButton = tk.Button(self, text='Enter Grades', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=self.enterG)
 			enterButton.grid(row=2, column=0, padx=(40,5), pady=(5,2), sticky="e")
-			viewButton.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
+			viewButF.grid(row=2, column=1, padx=(5,40), pady=(5,2), sticky="w")
 		else: # a student
-			viewButton.grid(row=2, column=0, columnspan=2, pady=(5,2))
+			viewButF.grid(row=2, column=0, columnspan=2, pady=(5,2))
 
 		ttk.Separator(self, orient="horizontal").grid(row=3, column=0, columnspan=2, sticky='nsew')
 
@@ -217,54 +220,68 @@ class BcD(tk.Tk):
 		else:
 			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
 
-	def viewG(self):
-		self.geometry("")
+	def getGrades(self):
+		url = 'http://localhost/view.php'
+		try:
+			self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen')
+			self.footer.update_idletasks()
+			response = self.sess.post(url)
+			text = response.text
+		except (ConnectionError, requests.exceptions.RequestException) as e:
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			return
 
+		if text == "D":
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			return
+		return text
+
+	def viewG(self, flag):
+		self.geometry("")
+		# self.sess = requests.Session()
 		if self.eG != None:
 			self.eG.grid_forget()
 
-		if self.vG == None:
+		if flag == 0 or (flag == 1 and self.vG == None):
+			if self.vG == None:
 
-			url = 'http://localhost/view.php'
-			try:
-				self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen')
-				response = self.sess.post(url)
-				text = response.text
-			except (ConnectionError, requests.exceptions.RequestException) as e:
-				self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
-				return
+				text = self.getGrades()
+				self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
 
-			if text == "D":
-				self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
-				return
-			self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
+				self.vG = tk.Frame(self)
+				viewList = ttk.Treeview(self.vG, height=15)
+				viewList['show'] = 'headings'
+				viewList['columns'] = ('Roll', 'Name', 'Course', 'Grade')
+				viewList.heading("#1", text='Roll No.', anchor='w')
+				viewList.column("#1", stretch="no", width=100)
+				viewList.heading("#2", text='Name', anchor='w')
+				viewList.column("#2", stretch="no", width=160 )
+				viewList.heading("#3", text='Course', anchor='w')
+				viewList.column("#3", stretch="no", width=100)
+				viewList.heading("#4", text='Grade', anchor='w')
+				viewList.column("#4", stretch="no", width=100)
 
-			self.vG = tk.Frame(self)
-			viewList = ttk.Treeview(self.vG, height=15)
-			viewList['show'] = 'headings'
-			viewList['columns'] = ('Roll', 'Name', 'Course', 'Grade')
-			viewList.heading("#1", text='Roll No.', anchor='w')
-			viewList.column("#1", stretch="no", width=100)
-			viewList.heading("#2", text='Name', anchor='w')
-			viewList.column("#2", stretch="no", width=160 )
-			viewList.heading("#3", text='Course', anchor='w')
-			viewList.column("#3", stretch="no", width=100)
-			viewList.heading("#4", text='Grade', anchor='w')
-			viewList.column("#4", stretch="no", width=100)
+				for row in text.split('&'):
+					viewList.insert("", "end", values=row.split('%'))
 
+				viewList.pack(side="left", expand=True, fill="both")
+
+				yscroll = tk.Scrollbar(self.vG, command=viewList.yview, orient="vertical")
+				yscroll.pack(side="right", fill="y")
+
+				viewList.configure(yscrollcommand=yscroll.set)
+				viewList.bind("<Double-Button-1>", self.updateG)
+
+				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
+			else:
+				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
+		elif flag == 1:
+			text = self.getGrades()
+			viewList = self.vG.winfo_children()[0]
+			viewList.delete(*viewList.get_children())
 			for row in text.split('&'):
 				viewList.insert("", "end", values=row.split('%'))
-
-			viewList.pack(side="left", expand=True, fill="both")
-
-			yscroll = tk.Scrollbar(self.vG, command=viewList.yview, orient="vertical")
-			yscroll.pack(side="right", fill="y")
-
-			viewList.configure(yscrollcommand=yscroll.set)
-			viewList.bind("<Double-Button-1>", self.updateG)
-
-			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
-		else:
+			self.footer.config(text='Retrieving Grades Completed', bg='black', fg='springGreen')
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
@@ -295,11 +312,17 @@ class BcD(tk.Tk):
 
 		if text == "N":
 			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
-		elif text == "D":
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+		elif text[0] == "D":
+			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white')
+			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, float(text[1:])+1.0)
 		elif text == "S":
 			self.footer.config(text='Successfully Entered Grades', bg='black', fg='springGreen')
-			self.eG.winfo_children()[0].winfo_children()[1].delete("1.0", "end")
+			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, "end")
+			# Put reload button
+			ref = tk.PhotoImage(file='reload.png')
+			refreshG = tk.Button(self.winfo_children()[4], image=ref, activebackground='cyan4', command=lambda: self.viewG(1))
+			refreshG.image = ref
+			refreshG.grid(row=0, column=1)
 
 	def updateG(self, event):
 		w = event.widget
