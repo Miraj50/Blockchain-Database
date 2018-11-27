@@ -1,0 +1,48 @@
+language: php
+
+services:
+  - docker
+
+sudo: required
+
+cache:
+  directories:
+    - $HOME/.composer/cache
+
+php:
+  - 5.4
+  - 5.5
+  - 5.6
+  - 7.0
+
+env:
+  DOCKER_COMPOSE_VERSION: 1.9.0
+
+before_install:
+  - sudo rm -f /usr/local/bin/docker-compose
+  - curl -L https://github.com/docker/compose/releases/download/${DOCKER_COMPOSE_VERSION}/docker-compose-`uname -s`-`uname -m` > docker-compose
+  - chmod +x docker-compose
+  - sudo mv docker-compose /usr/local/bin
+
+  - docker-compose --version
+
+  - cd test-instance
+  - docker-compose pull
+  - docker-compose up --build -d
+  - cd ../
+
+  - docker ps
+
+before_script:
+  - composer selfupdate
+  - sh -c 'if [ "$TRAVIS_PHP_VERSION" != "hhvm-nightly" ]; then echo "memory_limit = -1" >> ~/.phpenv/versions/$(phpenv version-name)/etc/conf.d/travis.ini; fi;'
+  - COMPOSER_ROOT_VERSION=dev-master composer --prefer-source --dev install
+  - wget https://scrutinizer-ci.com/ocular.phar
+
+script:
+  - JSON_RPC_URL="http://localhost:8002" bin/phpunit --bootstrap vendor/autoload.php tests/ --verbose --colors=always --debug --coverage-clover=coverage.clover
+  - php ocular.phar code-coverage:upload --format=php-clover coverage.clover
+
+after_script:
+  - cd test-instance
+  - docker-compose stop

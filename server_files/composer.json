@@ -1,0 +1,5 @@
+{
+    "require": {
+        "kunstmaan/libphp-multichain": "^1.1"
+    }
+}

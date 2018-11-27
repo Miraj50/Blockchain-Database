@@ -1,0 +1,20 @@
+{
+  "name": "kunstmaan/libphp-multichain",
+  "description": "Unofficial PHP library for interacting with the Multichain JsonRPC interface",
+  "license": "MIT",
+  "require": {
+    "php": ">=5.4.0",
+    "fguillot/json-rpc": "~v1.2.3"
+  },
+  "require-dev": {
+    "phpunit/phpunit": "@stable"
+  },
+  "config": {
+    "bin-dir": "bin"
+  },
+  "autoload": {
+    "psr-0": {
+      "": "src"
+    }
+  }
+}

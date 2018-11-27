@@ -1,0 +1,79 @@
+[
+    {
+        "name": "fguillot/json-rpc",
+        "version": "v1.2.7",
+        "version_normalized": "1.2.7.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/matasarei/JsonRPC.git",
+            "reference": "5571dc7be4d1a2e5d5409b5df8ee5d7e6b258b2c"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/matasarei/JsonRPC/zipball/5571dc7be4d1a2e5d5409b5df8ee5d7e6b258b2c",
+            "reference": "5571dc7be4d1a2e5d5409b5df8ee5d7e6b258b2c",
+            "shasum": ""
+        },
+        "require": {
+            "php": ">=5.4"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "4.8.*"
+        },
+        "time": "2018-10-30T12:46:38+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "JsonRPC": "src/"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "authors": [
+            {
+                "name": "Frédéric Guillot"
+            }
+        ],
+        "description": "Simple Json-RPC client/server library that just works",
+        "homepage": "https://github.com/fguillot/JsonRPC"
+    },
+    {
+        "name": "kunstmaan/libphp-multichain",
+        "version": "v1.1.0",
+        "version_normalized": "1.1.0.0",
+        "source": {
+            "type": "git",
+            "url": "https://github.com/Kunstmaan/libphp-multichain.git",
+            "reference": "67d01a027d1db4d4ccbcab55ee8d1f4d5578e2e3"
+        },
+        "dist": {
+            "type": "zip",
+            "url": "https://api.github.com/repos/Kunstmaan/libphp-multichain/zipball/67d01a027d1db4d4ccbcab55ee8d1f4d5578e2e3",
+            "reference": "67d01a027d1db4d4ccbcab55ee8d1f4d5578e2e3",
+            "shasum": ""
+        },
+        "require": {
+            "fguillot/json-rpc": "~v1.2.3",
+            "php": ">=5.4.0"
+        },
+        "require-dev": {
+            "phpunit/phpunit": "@stable"
+        },
+        "time": "2017-01-04T10:40:28+00:00",
+        "type": "library",
+        "installation-source": "dist",
+        "autoload": {
+            "psr-0": {
+                "": "src"
+            }
+        },
+        "notification-url": "https://packagist.org/downloads/",
+        "license": [
+            "MIT"
+        ],
+        "description": "Unofficial PHP library for interacting with the Multichain JsonRPC interface"
+    }
+]
