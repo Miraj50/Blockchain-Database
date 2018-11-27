@@ -39,6 +39,20 @@
 
 				try {
 					foreach ($json['data'] as $i) {
+						$course_list = $client->listStreamKeyItems('instructor', $i['identifier'], false, 999999999);
+						$isAllowed = false;
+						foreach ($course_list as $value) {
+							if($i['course'] === pack('H*', $value['data'])){
+								$isAllowed = true;
+								break;
+							}
+						}
+
+						if(!$isAllowed){
+							echo "D" . $count;
+							die();
+						}
+
 						if(!(isset($i['sig']))){
 							echo "D" . $count;
 							die();
@@ -50,7 +64,6 @@
 						$ok = openssl_verify($i['uid'] . $i['course'] . $i['grade'], $sig, $p_key, OPENSSL_ALGO_SHA256);
 						if ($ok != 1) {
 							echo "D" . $count;
-							// echo "openssl";
 							die();
 						}
 

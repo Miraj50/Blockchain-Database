@@ -37,25 +37,20 @@
 			}
 
 			try {
-				// 
-				$course_list = $client->listStreamKeyItems('instructor', '<instructor_identifier>');
-				$courses = array();
-				foreach ($course_list as $key => $value) {
-					$courses[] = $value['data'];
-				}
+				$identifier = $_SESSION['logged_in'];
 
-				$s = "SELECT grades.uid id, name, course, grade FROM grades, creds WHERE grades.uid=creds.uid";
-				foreach($courses as $key => $value) {
-					// strval -> integer to string
-					$s = $s . " AND course = :course" . strval($key);
+				$course_list = $client->listStreamKeyItems('instructor', $identifier, false, 999999999);
+				$in = "";
+				foreach ($course_list as $i => $value) {
+					$key = ":id".$i;
+					$in .= "$key,";
+					$in_params[$key] = pack('H*', $value['data']);
 				}
-				// $s = "SELECT grades.uid id, name, course, grade FROM grades, creds WHERE grades.uid=creds.uid AND ORDER BY id";
+				$in = rtrim($in,",");
+
+				$s = "SELECT grades.uid id, name, course, grade FROM grades, creds WHERE grades.uid=creds.uid AND course IN ($in) ORDER BY course asc";
 				$stmt = $conn->prepare($s);
-				foreach($courses as $key => $value) {
-					// strval -> integer to string
-					$stmt->bindValue(':course' . strval($key), $value);
-				}
-				$stmt->execute();
+				$stmt->execute($in_params);
 
 				while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
 					echo $row['id'] . '%' . $row['name'] . '%' . $row['course'] . '%' . $row['grade'] . '&';

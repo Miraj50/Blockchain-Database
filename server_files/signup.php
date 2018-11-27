@@ -1,11 +1,8 @@
 <?php 
-	// session_start();
-	// if(isset($_SESSION['logged_in'])){
-	// 	header("location:home.php");
-	// }
+
 	require __DIR__ . '/vendor/autoload.php';
 	use be\kunstmaan\multichain\MultichainClient as MultichainClient;
-	
+
 	$servername = "localhost";
 	$dbname = "pki";
 	$username = "root";

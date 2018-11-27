@@ -28,7 +28,7 @@
 	$all_prev_tx = '';
 	$tuple = '';
 
-	$client = new MultichainClient("http://192.168.0.103:6290", "multichainrpc", "E13c1pNBnaMxRpErVawD1mVki8cqCU4fn2EZhomsdGfi", 3);
+	$client = new MultichainClient("http://127.0.0.1:6290", "multichainrpc", "E13c1pNBnaMxRpErVawD1mVki8cqCU4fn2EZhomsdGfi", 3);
 
 	if($stmt->rowCount() > 0){
 		// $address = $client->setDebug(true)->getNewAddress();
@@ -44,7 +44,6 @@
 			else{
 				$all_prev_tx .= $row['txid'] . $row['uid'] . $row['course'] . $row['grade'] . $row['identifier'];
 			}
-			// $pkey = $client->listStreamKeyItems($row['identifier']);
 			$cur_db[] = $row['txid'] . $row['uid'] . $row['course'] . $row['grade'] . $row['identifier'];
 			$primkey_list[] = $row['uid'] . $row['course'];
 		}

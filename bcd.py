@@ -299,25 +299,26 @@ class BcD(tk.Tk):
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
-		passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
-
-		with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
-			privkey = RSA.importKey(f.read(), passphrase=passPh)
-
+		
 		post_data = {'data':[]}
 		gradeList = grades.split('\n')
 		num = 0
 		for row in gradeList:
 			temp = row.split()
 
-			digest = SHA256.new()
-			digest.update("".join(temp).encode())
-			sig = pkcs.new(RSA.importKey(privkey.exportKey())).sign(digest).hex()
-
 			if len(temp) != 3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
 				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 				return
 			else:
+				passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
+
+				with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
+					privkey = RSA.importKey(f.read(), passphrase=passPh)
+
+				digest = SHA256.new()
+				digest.update("".join(temp).encode())
+				sig = pkcs.new(RSA.importKey(privkey.exportKey())).sign(digest).hex()
+
 				post_data['data'].append({'uid':temp[0], 'course':temp[1], 'grade':temp[2], 'identifier':self.uname, 'sig':sig})
 				num = num+1
 
