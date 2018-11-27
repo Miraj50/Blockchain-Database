@@ -5,6 +5,8 @@ import tkinter.ttk as ttk
 import requests, time
 import os, hashlib
 from Crypto.PublicKey import RSA
+from Crypto.Signature import PKCS1_v1_5 as pkcs
+from Crypto.Hash import SHA256
 
 class BcD(tk.Tk):
 	def __init__(self):
@@ -112,10 +114,13 @@ class BcD(tk.Tk):
 		if(not self.checkEmpty(uid, pword, passPh)):
 			return
 
+		key = RSA.generate(2048)
+		pubkey = key.publickey().exportKey().hex()
+
 		pass_h = hashlib.sha256(pword.encode()).hexdigest()
 
 		url = 'http://localhost/signup.php'
-		post_data = {'uid': uid, 'pass': pass_h}
+		post_data = {'uid': uid, 'pass': pass_h, 'pubkey':pubkey}
 		try:
 			self.footer.config(text='Signing Up...', bg='black', fg='springGreen')
 			self.footer.update_idletasks()
@@ -126,7 +131,6 @@ class BcD(tk.Tk):
 			return
 		
 		if text == "S":
-			key = RSA.generate(4096)
 			encrypted_key = key.exportKey(passphrase=passPh, pkcs=8)
 			with open(os.path.expanduser("~/"+uid+".pem"), "wb+") as f:
 				f.write(encrypted_key)
@@ -182,7 +186,7 @@ class BcD(tk.Tk):
 		u.pack(side='left', expand=False)
 
 		topF.grid(row=1, column=0, padx=(10,0), pady=(5,5), sticky="w")
-		logoutButton = tk.Button(self, text='LogOut', bg='brown', fg='white', activebackground='brown4', activeforeground='white', command=self.Logout)
+		logoutButton = tk.Button(self, text='LogOut', bg='brown4', fg='white', activebackground='brown', activeforeground='white', command=self.Logout)
 		logoutButton.grid(row=1, column=1, padx=(0,10), pady=(5,5), sticky="e")
 
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
@@ -204,16 +208,16 @@ class BcD(tk.Tk):
 	def enterG(self):
 		self.geometry("")
 
-		if self.vG != None:
+		if self.vG is not None:
 			self.vG.grid_forget()
 
-		if self.eG == None:
+		if self.eG is None:
 			self.eG = tk.Frame(self)
 			self.eG.grid_columnconfigure(0, weight=1) # Along with sticky=ewns will resize to full window
 
-			enterGrades = scrolledtext.ScrolledText(self.eG, font='Verdana 11', wrap='word', spacing2=0, spacing3=7, width=65, height=12)
+			enterGrades = scrolledtext.ScrolledText(self.eG, font='Verdana 11', wrap='word', spacing2=0, spacing3=7, width=50, height=12)
 			enterGrades.pack(expand=True, fill="both")
-			self.eG.winfo_children()[0].winfo_children()[1].tag_configure("error", foreground="red")
+			self.eG.winfo_children()[0].winfo_children()[1].tag_configure("error", background="gray80", foreground="red")
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', activebackground='forestgreen' ,activeforeground='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
 			enterGBut.pack()
@@ -232,21 +236,28 @@ class BcD(tk.Tk):
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 			return
 
+		if text == "UFO":
+			self.footer.config(text='!!!  BREACH DETECTED  !!!', bg='gold', fg='red3', borderwidth=2, relief='sunken')
+			self.footer.update_idletasks()
+			return None
 		if text == "D":
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
-			return
+			return None
 		return text
 
 	def viewG(self, flag):
 		self.geometry("")
 
-		if self.eG != None:
+		if self.eG is not None:
 			self.eG.grid_forget()
 
-		if flag == 0 or (flag == 1 and self.vG == None):
-			if self.vG == None:
+		if flag == 0 or (flag == 1 and self.vG is None):
+			if self.vG is None:
 
 				text = self.getGrades()
+				if text is None:
+					return
+
 				self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen')
 
 				self.vG = tk.Frame(self)
@@ -278,6 +289,8 @@ class BcD(tk.Tk):
 				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 		elif flag == 1:
 			text = self.getGrades()
+			if text is None:
+				return
 			viewList = self.vG.winfo_children()[0]
 			viewList.delete(*viewList.get_children())
 			for row in text.split('&'):
@@ -286,16 +299,26 @@ class BcD(tk.Tk):
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
+		passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
+
+		with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
+			privkey = RSA.importKey(f.read(), passphrase=passPh)
+
 		post_data = {'data':[]}
 		gradeList = grades.split('\n')
 		num = 0
 		for row in gradeList:
 			temp = row.split()
-			if len(temp) !=3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
+
+			digest = SHA256.new()
+			digest.update("".join(temp).encode())
+			sig = pkcs.new(RSA.importKey(privkey.exportKey())).sign(digest).hex()
+
+			if len(temp) != 3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
 				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 				return
 			else:
-				post_data['data'].append({'uid':temp[0], 'course':temp[1], 'grade':temp[2]})
+				post_data['data'].append({'uid':temp[0], 'course':temp[1], 'grade':temp[2], 'identifier':self.uname, 'sig':sig})
 				num = num+1
 
 		post_data['count'] = num
@@ -306,11 +329,14 @@ class BcD(tk.Tk):
 			self.footer.update_idletasks()
 			response = self.sess.post(url, json=post_data)
 			text = response.text
+			# print(text)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 			return
 
-		if text == "N":
+		if text == "UFO":
+			self.footer.config(text='!!!  BREACH DETECTED  !!!', bg='gold', fg='red3', borderwidth=2, relief='sunken')
+		elif text == "N":
 			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 		elif text[0] == "D":
 			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white')
@@ -332,8 +358,16 @@ class BcD(tk.Tk):
 		item = w.item(w.selection())['values']
 
 		uG = simpledialog.askstring('Update grade', 'Enter New Grade', parent=self, initialvalue=item[3])
+		passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
 
-		post_data = {'uid':item[0], 'course':item[2], 'grade':uG}
+		with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
+			privkey = RSA.importKey(f.read(), passphrase=passPh)
+
+		digest = SHA256.new()
+		digest.update("".join([item[0], item[2], uG]).encode())
+		sig = pkcs.new(RSA.importKey(privkey.exportKey())).sign(digest).hex()
+
+		post_data = {'uid':item[0], 'course':item[2], 'grade':uG, 'identifier':self.uname, 'sig':sig}
 
 		url = 'http://localhost/update.php'
 		try:
@@ -341,6 +375,7 @@ class BcD(tk.Tk):
 			self.footer.update_idletasks()
 			response = self.sess.post(url, data=post_data)
 			text = response.text
+			print(text)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
 			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
 			return
@@ -350,6 +385,8 @@ class BcD(tk.Tk):
 		elif text == "S":
 			self.footer.config(text='Grade Updated Successfully', bg='black', fg='springGreen')
 			self.vG.winfo_children()[0].item(idx, values=(item[0], item[1], item[2], uG))
+		elif text == "UFO":
+			self.footer.config(text='!!!  BREACH DETECTED  !!!', bg='gold', fg='red3', borderwidth=2, relief='sunken')
 
 	def Logout(self):
 		url = 'http://localhost/logout.php'
