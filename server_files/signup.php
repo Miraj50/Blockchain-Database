@@ -4,7 +4,7 @@
 	use be\kunstmaan\multichain\MultichainClient as MultichainClient;
 
 	$servername = "localhost";
-	$dbname = "pki";
+	$dbname = "credential";
 	$username = "root";
 	$password = "Hack@hack1";
 
@@ -36,7 +36,7 @@
 			$stmt->bindValue(':hash', $hash);
 			
 			if($stmt->execute()){
-				$client = new MultichainClient("http://192.168.0.103:6290", "multichainrpc", "E13c1pNBnaMxRpErVawD1mVki8cqCU4fn2EZhomsdGfi", 3);
+				$client = new MultichainClient("http://127.0.0.1:6472", "multichainrpc", "ANVEmUWRZxYs3GS8GkrBtjKt14vNTtKWgSLNqETg9FY6", 3);
 				$client->publishStreamItem('pubkey', $uname, $pubkey);
 				echo "S";
 			}

@@ -52,7 +52,7 @@
 		$conn = null;
 	}
 	else if($stud === '0'){
-		$dbname = "pki";
+		$dbname = "credential";
 		try {
 			$conn = new PDO("mysql:host=$servername;dbname=$dbname", $username, $password);
 			$conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);

@@ -28,7 +28,7 @@
 	$all_prev_tx = '';
 	$tuple = '';
 
-	$client = new MultichainClient("http://127.0.0.1:6290", "multichainrpc", "E13c1pNBnaMxRpErVawD1mVki8cqCU4fn2EZhomsdGfi", 3);
+	$client = new MultichainClient("http://127.0.0.1:6472", "multichainrpc", "ANVEmUWRZxYs3GS8GkrBtjKt14vNTtKWgSLNqETg9FY6", 3);
 
 	if($stmt->rowCount() > 0){
 		// $address = $client->setDebug(true)->getNewAddress();
