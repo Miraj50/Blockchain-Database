@@ -13,6 +13,7 @@ class BcD(tk.Tk):
 		super().__init__()
 		self.sess = None
 		self.uname = ""
+		self.student = None
 		self.eG = None
 		self.vG = None
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
@@ -162,6 +163,7 @@ class BcD(tk.Tk):
 
 		if text == "S":
 			self.uname = uid
+			self.student = stud
 			self.Home(stud)
 		elif text == "U":
 			self.footer.config(text='Please SignUp !', bg='red2', fg='white')
@@ -282,7 +284,8 @@ class BcD(tk.Tk):
 				yscroll.pack(side="right", fill="y")
 
 				viewList.configure(yscrollcommand=yscroll.set)
-				viewList.bind("<Double-Button-1>", self.updateG)
+				if self.student == 0:
+					viewList.bind("<Double-Button-1>", self.updateG)
 
 				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 			else:
@@ -303,6 +306,12 @@ class BcD(tk.Tk):
 		post_data = {'data':[]}
 		gradeList = grades.split('\n')
 		num = 0
+
+		passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
+
+		with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
+			privkey = RSA.importKey(f.read(), passphrase=passPh)
+
 		for row in gradeList:
 			temp = row.split()
 
@@ -310,11 +319,6 @@ class BcD(tk.Tk):
 				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
 				return
 			else:
-				passPh = simpledialog.askstring("PassPhrase", "Enter PassPhrase:", show='*')
-
-				with open(os.path.expanduser("~/"+self.uname+".pem"), "r") as f:
-					privkey = RSA.importKey(f.read(), passphrase=passPh)
-
 				digest = SHA256.new()
 				digest.update("".join(temp).encode())
 				sig = pkcs.new(RSA.importKey(privkey.exportKey())).sign(digest).hex()
@@ -399,6 +403,7 @@ class BcD(tk.Tk):
 			self.attributes('-zoomed', False)
 			self.clear_widgets()
 			self.uname = ""
+			self.student = None
 			self.sess = None
 			self.eG = None
 			self.vG = None
