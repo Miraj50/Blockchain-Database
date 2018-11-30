@@ -16,7 +16,7 @@ class BcD(tk.Tk):
 		self.student = None
 		self.eG = None
 		self.vG = None
-		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen')
+		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen', relief='raised')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
 		# self.Home(0)
 		self.Start()
@@ -101,13 +101,13 @@ class BcD(tk.Tk):
 
 	def checkEmpty(self, uid, pword, passPh):
 		if(len(uid)==0):
-			self.footer.config(text='Username field is Empty !', bg='red2', fg='white')
+			self.footer.config(text='Username field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
 		if(len(pword)==0):
-			self.footer.config(text='Password field is Empty !', bg='red2', fg='white')
+			self.footer.config(text='Password field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
 		if(len(passPh)==0):
-			self.footer.config(text='PassPhrase field is Empty !', bg='red2', fg='white')
+			self.footer.config(text='PassPhrase field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
 		return 1
 
@@ -123,23 +123,23 @@ class BcD(tk.Tk):
 		url = 'http://localhost/signup.php'
 		post_data = {'uid': uid, 'pass': pass_h, 'pubkey':pubkey}
 		try:
-			self.footer.config(text='Signing Up...', bg='black', fg='springGreen')
+			self.footer.config(text='Signing Up...', bg='black', fg='springGreen', relief='raised')
 			self.footer.update_idletasks()
 			response = requests.post(url, data=post_data)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 			return
 		
 		if text == "S":
 			encrypted_key = key.exportKey(passphrase=passPh, pkcs=8)
 			with open(os.path.expanduser("~/"+uid+".pem"), "wb+") as f:
 				f.write(encrypted_key)
-			self.footer.config(text='Successfully Registered. Please Re-Login', bg='black', fg='springGreen')
+			self.footer.config(text='Successfully Registered. Please Re-Login', bg='black', fg='springGreen', relief='raised')
 		elif text == "M":
-			self.footer.config(text='Username already taken !', bg='red2', fg='white')
+			self.footer.config(text='Username already taken !', bg='red2', fg='white', relief='raised')
 		else:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 
 	def CheckLogin(self, uid, pword, stud):
 		if(not self.checkEmpty(uid, pword, passPh='None')):
@@ -153,12 +153,12 @@ class BcD(tk.Tk):
 		post_data = {'uid': uid, 'pass': pass_h, 'student': stud}
 		
 		try:
-			self.footer.config(text='Checking Login Information...', bg='black', fg='springGreen')
+			self.footer.config(text='Checking Login Information...', bg='black', fg='springGreen', relief='raised')
 			self.footer.update_idletasks()
 			response = self.sess.post(url, data=post_data)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 			return
 
 		if text == "S":
@@ -166,11 +166,11 @@ class BcD(tk.Tk):
 			self.student = stud
 			self.Home(stud)
 		elif text == "U":
-			self.footer.config(text='Please SignUp !', bg='red2', fg='white')
+			self.footer.config(text='Please SignUp !', bg='red2', fg='white', relief='raised')
 		elif text == "D":
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 		else:
-			self.footer.config(text='Incorrect Username or Password !', bg='red2', fg='white')
+			self.footer.config(text='Incorrect Username or Password !', bg='red2', fg='white', relief='raised')
 
 	def Home(self, stud):
 		self.clear_widgets()
@@ -178,7 +178,7 @@ class BcD(tk.Tk):
 		self.title('Grades')
 		self.grid_rowconfigure(3, weight=1)
 
-		self.footer.config(text='Succesfully Logged in', bg='black', fg='springGreen')
+		self.footer.config(text='Succesfully Logged in', bg='black', fg='springGreen', relief='raised')
 
 		topF = tk.Frame(self)
 
@@ -230,12 +230,12 @@ class BcD(tk.Tk):
 	def getGrades(self):
 		url = 'http://localhost/view.php'
 		try:
-			self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen')
+			self.footer.config(text='Retrieving Grades...', bg='black', fg='springGreen', relief='raised')
 			self.footer.update_idletasks()
 			response = self.sess.post(url)
 			text = response.text
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 			return
 
 		if text == "UFO":
@@ -243,7 +243,7 @@ class BcD(tk.Tk):
 			self.footer.update_idletasks()
 			return None
 		if text == "D":
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 			return None
 		return text
 
@@ -260,7 +260,7 @@ class BcD(tk.Tk):
 				if text is None:
 					return
 
-				self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen')
+				self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen', relief='raised')
 
 				self.vG = tk.Frame(self)
 				viewList = ttk.Treeview(self.vG, height=15)
@@ -298,7 +298,7 @@ class BcD(tk.Tk):
 			viewList.delete(*viewList.get_children())
 			for row in text.split('&'):
 				viewList.insert("", "end", values=row.split('%'))
-			self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen')
+			self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen', relief='raised')
 			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
@@ -316,7 +316,7 @@ class BcD(tk.Tk):
 			temp = row.split()
 
 			if len(temp) != 3 or len(temp[0]) > 128 or len(temp[1]) >10 or len(temp[2]) != 2:
-				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
+				self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white', relief='raised')
 				return
 			else:
 				digest = SHA256.new()
@@ -330,7 +330,7 @@ class BcD(tk.Tk):
 
 		url = 'http://localhost/insert.php'
 		try:
-			self.footer.config(text='Submitting Grades...', bg='black', fg='springGreen')
+			self.footer.config(text='Submitting Grades...', bg='black', fg='springGreen', relief='raised')
 			self.footer.update_idletasks()
 			response = self.sess.post(url, json=post_data)
 			text = response.text
@@ -342,14 +342,14 @@ class BcD(tk.Tk):
 		if text == "UFO":
 			self.footer.config(text='!!!  BREACH DETECTED  !!!', bg='gold', fg='red3', borderwidth=2, relief='sunken')
 		elif text == "N":
-			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white')
+			self.footer.config(text='Please Follow the required Format !', bg='red2', fg='white', relief='raised')
 		elif text[0] == "D":
-			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white')
+			self.footer.config(text='Some Grades could not be Submitted !', bg='red2', fg='white', relief='raised')
 			textBox = self.eG.winfo_children()[0].winfo_children()[1]
 			textBox.delete(1.0, float(text[1:])+1.0)
 			textBox.tag_add("error", "1.0", "2.0")
 		elif text == "S":
-			self.footer.config(text='Grades Entered Successfully', bg='black', fg='springGreen')
+			self.footer.config(text='Grades Entered Successfully', bg='black', fg='springGreen', relief='raised')
 			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, "end")
 			# Put reload button
 			ref = tk.PhotoImage(file='reload.png')
@@ -382,13 +382,13 @@ class BcD(tk.Tk):
 			text = response.text
 			print(text)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 			return
 
 		if text == "D":
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 		elif text == "S":
-			self.footer.config(text='Grade Updated Successfully', bg='black', fg='springGreen')
+			self.footer.config(text='Grade Updated Successfully', bg='black', fg='springGreen', relief='raised')
 			self.vG.winfo_children()[0].item(idx, values=(item[0], item[1], item[2], uG))
 		elif text == "UFO":
 			self.footer.config(text='!!!  BREACH DETECTED  !!!', bg='gold', fg='red3', borderwidth=2, relief='sunken')
@@ -398,7 +398,7 @@ class BcD(tk.Tk):
 		try:
 			response = self.sess.post(url)
 		except (ConnectionError, requests.exceptions.RequestException) as e:
-			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white')
+			self.footer.config(text='Some Error has Occurred !', bg='red2', fg='white', relief='raised')
 		else:
 			self.attributes('-zoomed', False)
 			self.clear_widgets()
@@ -407,7 +407,7 @@ class BcD(tk.Tk):
 			self.sess = None
 			self.eG = None
 			self.vG = None
-			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen')
+			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen', relief='raised')
 			self.Start()
 
 	def clear_widgets(self):
