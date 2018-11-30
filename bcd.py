@@ -2,7 +2,7 @@ import tkinter as tk
 import tkinter.messagebox as msgbox
 from tkinter import scrolledtext, simpledialog
 import tkinter.ttk as ttk
-import requests, time
+import requests
 import os, hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5 as pkcs
@@ -16,6 +16,7 @@ class BcD(tk.Tk):
 		self.student = None
 		self.eG = None
 		self.vG = None
+		self.reload_button = 0
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen', relief='raised')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
 		# self.Home(0)
@@ -79,9 +80,11 @@ class BcD(tk.Tk):
 
 		PPframe = tk.Frame(signup)
 
+		help_img = "R0lGODlhDAANAPZCACAgICEhISkpKTIyMj09PUJCQkZGRkpKSktLS1dXV1hYWF1dXV5eXmBgYGFhYWRkZHBwcHR0dHZ2dnd3d4SEhIWFhYeHh4qKio+Pj5GRkZKSkpmZmZubm52dnZ+fn6Ojo6ioqK2tra+vr7CwsLa2tre3t7y8vMPDw8jIyMvLy83NzdLS0tXV1dfX19jY2NnZ2eHh4eTk5OXl5enp6e7u7vHx8fLy8vPz8/X19fb29vf39/j4+Pn5+fr6+vv7+/z8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAAIf8LSW1hZ2VNYWdpY2sOZ2FtbWE9MC40NTQ1NDUALAAAAAAMAA0AAAeNgDg5PTIhFhYhMjw5jDkkDRIdHRMNJDo4OyILKjEgHispCyM7LQstMAQDBgImpS0XGUIlCC84BQ5CGhcNKEI8N0EkABhCKA0JLUJBQicBEDZCLQq8ykIUBzVCxQ0XGtUkH0DaGRcuCyzaFQ8+QiymOyMLKUA0Mz8pDKM5Oo8RGxwRKjXKwaPQoUSLcgQCADs="
 		passPh = tk.Entry(PPframe, show='*')
 		passPh.grid(row=0, column=0, sticky="w")
-		img = tk.PhotoImage(file='q.gif')
+		# img = tk.PhotoImage(file='q.gif')
+		img = tk.PhotoImage(data=help_img)
 		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Help','This PassPhrase will be used for generating your Private Key'))
 		PPhelp.image = img
 		PPhelp.grid(row=0, column=1, sticky="w")
@@ -351,11 +354,14 @@ class BcD(tk.Tk):
 		elif text == "S":
 			self.footer.config(text='Grades Entered Successfully', bg='black', fg='springGreen', relief='raised')
 			self.eG.winfo_children()[0].winfo_children()[1].delete(1.0, "end")
-			# Put reload button
-			ref = tk.PhotoImage(file='reload.png')
-			refreshG = tk.Button(self.winfo_children()[4], image=ref, activebackground='cyan4', command=lambda: self.viewG(1))
-			refreshG.image = ref
-			refreshG.grid(row=0, column=1)
+			# Put reload button (only once)
+			if self.reload_button == 0:
+				ref_img = "iVBORw0KGgoAAAANSUhEUgAAABYAAAAWCAMAAADzapwJAAAABGdBTUEAALGPC/xhBQAAAAFzUkdCAK7OHOkAAAIcUExURf///ya6oSe6oTS/pzO+pjG+pim7ojK+pv3+/jW/pyW6oCi7oi+9pTvBqjjAqTa/py28pD/CrDS+pyO5n0bEr/7+/qfj2Sq8ozS+pje/qFLItEfFr1rLuP7//zG+pSq7ooTYyt/18TzBq/z+/Se7oSy8ozjAqD7CqznAqWrQvkfEry69pG3RwCi7oS68pG7RwCa6oDC9pSu8o+f39CK5nya7oSe7ouj39SG5n2TOvCO6nyG4nyq7o/f8+/X8++f39eL28iS6oOv59mLNuyu7oyW5oOr49pPd0EXEruD18nfUxOD18f7//iO5oLHm3UHDraHi18ft5mzQv0bErii6os/w62vQv6Ti16Pi1+v49tXy7dz08N718aLh1/P7+un39ajk2cbt58vu6I/cz6nk2vH6+T3Cq0/HskLDrVTJtFPItJHc0Jbe0Sy8pDC+pXbUxKrk2oLXycLr5IjZy/T7+rnp4fn9/JHcz4PYySW6oeH28rTn3/X8+vb8+7zq4jK9pmbPvX/WyDO+p9Hx62fPvXnVxUzGsT3Bq1/MuW/RwHLSwmPOvIXYyuL18lrKt1nKt5fe0lbJtVfKtlbJto7bznDSwc7w6vz+/oPXyWfOvabj2LXo34fZy8bt5j/Cq+T39E7HsjK+pXzVxlfJtpbd0nHSwn/Wx33Wx6Dh1t708e/6+GPNvCq8otDw65bd0dfy7eX39FvKuNjz7iS6n1GSCawAAAG/SURBVBjTNdFVd9tAEAXgK2ml1UqWjDHHFFOYmZmatCmmTZmZmZmZUmZuk7bpH+zKPpmHmXO+h905dwCgQEXP+sqQ3R4qezEAtQC5UnHmvlPoi8iy3FaV+XSaQ0677o5FqKgQmtRd8tjHYctVnAzVm3ri+JFLT8dHpL6sOBS3/Og9IS3erEUhsABzf/Vs8lE7f2R3iyneBg7uu94b+42On4rRfQxY6dzruwX1gK4per9tFn8ydY6tjfBqgZpw16FWF5MYSXz+jpcj25pWoGypRCpSe/yUUlJ9LY5pbAnWLUaJjVDKKG98CM2FRYhp1AMmu3zBZQsdea/yYqKUUAZG/b6z2FzPLCYVzlVhRZIZSmj3FRThvJD3cwHebB5Uuq/2cL7jtP6gfkepg0jlxfC2vvsyjs6vGco3vNj0qrE3GtAWYeBNyp0exTeXJur90ZiK51HZqAUG/xm/wj8w/Phy84fXwDPBbNnEM2l/KGaV4AzPiaf19omYLt/RYQUbHxLMVOTG/g0bT10wFDO5fSof+OgDN2WKZqtuaCDv3TtXz5/n8GBCaOPryTUnjF1r85o78brJ5R67fUnxmk6olv4HiD1RWB2GYT8AAAAASUVORK5CYII="
+				ref = tk.PhotoImage(data=ref_img)
+				refreshG = tk.Button(self.winfo_children()[4], image=ref, activebackground='cyan4', command=lambda: self.viewG(1))
+				refreshG.image = ref
+				refreshG.grid(row=0, column=1)
+			self.reload_button = 1
 
 	def updateG(self, event):
 		w = event.widget
@@ -407,6 +413,7 @@ class BcD(tk.Tk):
 			self.sess = None
 			self.eG = None
 			self.vG = None
+			self.reload_button = 0
 			self.footer.config(text='Successfully Logged Out', bg='black', fg='springGreen', relief='raised')
 			self.Start()
 
