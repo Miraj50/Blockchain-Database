@@ -80,12 +80,12 @@ class BcD(tk.Tk):
 
 		PPframe = tk.Frame(signup)
 
-		help_img = "R0lGODlhDAANAPZCACAgICEhISkpKTIyMj09PUJCQkZGRkpKSktLS1dXV1hYWF1dXV5eXmBgYGFhYWRkZHBwcHR0dHZ2dnd3d4SEhIWFhYeHh4qKio+Pj5GRkZKSkpmZmZubm52dnZ+fn6Ojo6ioqK2tra+vr7CwsLa2tre3t7y8vMPDw8jIyMvLy83NzdLS0tXV1dfX19jY2NnZ2eHh4eTk5OXl5enp6e7u7vHx8fLy8vPz8/X19fb29vf39/j4+Pn5+fr6+vv7+/z8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAAIf8LSW1hZ2VNYWdpY2sOZ2FtbWE9MC40NTQ1NDUALAAAAAAMAA0AAAeNgDg5PTIhFhYhMjw5jDkkDRIdHRMNJDo4OyILKjEgHispCyM7LQstMAQDBgImpS0XGUIlCC84BQ5CGhcNKEI8N0EkABhCKA0JLUJBQicBEDZCLQq8ykIUBzVCxQ0XGtUkH0DaGRcuCyzaFQ8+QiymOyMLKUA0Mz8pDKM5Oo8RGxwRKjXKwaPQoUSLcgQCADs="
 		passPh = tk.Entry(PPframe, show='*')
 		passPh.grid(row=0, column=0, sticky="w")
-		# img = tk.PhotoImage(file='q.gif')
+
+		help_img = "R0lGODlhDAANAPZCACAgICEhISkpKTIyMj09PUJCQkZGRkpKSktLS1dXV1hYWF1dXV5eXmBgYGFhYWRkZHBwcHR0dHZ2dnd3d4SEhIWFhYeHh4qKio+Pj5GRkZKSkpmZmZubm52dnZ+fn6Ojo6ioqK2tra+vr7CwsLa2tre3t7y8vMPDw8jIyMvLy83NzdLS0tXV1dfX19jY2NnZ2eHh4eTk5OXl5enp6e7u7vHx8fLy8vPz8/X19fb29vf39/j4+Pn5+fr6+vv7+/z8/P39/f7+/v///wAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAAAAAAAIf8LSW1hZ2VNYWdpY2sOZ2FtbWE9MC40NTQ1NDUALAAAAAAMAA0AAAeNgDg5PTIhFhYhMjw5jDkkDRIdHRMNJDo4OyILKjEgHispCyM7LQstMAQDBgImpS0XGUIlCC84BQ5CGhcNKEI8N0EkABhCKA0JLUJBQicBEDZCLQq8ykIUBzVCxQ0XGtUkH0DaGRcuCyzaFQ8+QiymOyMLKUA0Mz8pDKM5Oo8RGxwRKjXKwaPQoUSLcgQCADs="
 		img = tk.PhotoImage(data=help_img)
-		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Help','This PassPhrase will be used for generating your Private Key'))
+		PPhelp = tk.Button(PPframe, image=img, command=lambda: msgbox.showinfo('Help', 'This PassPhrase will be used for generating your Private Key'))
 		PPhelp.image = img
 		PPhelp.grid(row=0, column=1, sticky="w")
 
@@ -103,13 +103,13 @@ class BcD(tk.Tk):
 		self.geometry("+%d+%d" % (x,h/4))
 
 	def checkEmpty(self, uid, pword, passPh):
-		if(len(uid)==0):
+		if len(uid) == 0:
 			self.footer.config(text='Username field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
-		if(len(pword)==0):
+		if len(pword) == 0:
 			self.footer.config(text='Password field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
-		if(len(passPh)==0):
+		if len(passPh) == 0:
 			self.footer.config(text='PassPhrase field is Empty !', bg='red2', fg='white', relief='raised')
 			return 0
 		return 1
