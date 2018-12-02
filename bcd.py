@@ -32,7 +32,7 @@ class BcD(tk.Tk):
 		login.grid(row=1, column=0, columnspan=2, pady=(5,5))
 		ttk.Separator(self, orient="horizontal").grid(row=2, column=0, columnspan=2, sticky='nsew')
 		signup = tk.Frame(self)
-		signup.grid(row=2, column=0, columnspan=2, pady=(5,5))
+		signup.grid(row=3, column=0, columnspan=2, pady=(5,5))
 
 		#login
 		loginText = tk.Label(login, text='Login', font='Fixedsys 16 bold', fg='darkblue')
@@ -53,7 +53,7 @@ class BcD(tk.Tk):
 		checkStud = tk.Checkbutton(login, text='Login as Student', font='Fixedsys 8', variable=stud, onvalue=1, offvalue=0)
 		checkStud.grid(row=3, column=1, padx=(0,30), sticky="w")
 
-		loginButton = tk.Button(login, text='Login', bg='blue3', fg='white', activebackground='blue', activeforeground='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get(), stud.get()))
+		loginButton = tk.Button(login, text='Login', bg='blue', fg='white', activebackground='blue3', activeforeground='white', command=lambda: self.CheckLogin(nameBox.get(), pwordBox.get(), stud.get()))
 		loginButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
 		loginButton.bind('<Return>', lambda e: self.CheckLogin(nameBox.get(), pwordBox.get(), stud.get()))
 
@@ -95,12 +95,27 @@ class BcD(tk.Tk):
 		SignUpButton.grid(row=4, column=0, columnspan=2, pady=(5,10))
 		SignUpButton.bind('<Return>', lambda e: self.SignUp(SuNameBox.get(), SuPwordBox.get(), passPh.get()))
 
+		#Footer
+		Footer = tk.Frame(self, bg='black')
+		Footer.grid(row=4, column=0, columnspan=2, sticky='ew')
+		mc_img = "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"
+		mc_logo = tk.PhotoImage(data=mc_img)
+		mc = tk.Label(Footer, image=mc_logo, text='Powered by MultiChain', compound='top', font='Verdana 7 bold', bg='black', fg='white')
+		mc.image = mc_logo
+		mc.grid(row=0, column=0, columnspan=2)
+		Footer.grid_columnconfigure(0, weight=1)
+
+		tk.Label(Footer, text='Developed By', font='Verdana 7 underline', bg='black', fg='gray40', bd=0).grid(row=3, column=0, pady=(5,0))
+		tk.Label(Footer, text='Rishabh Raj | Kumar Saurav | Kumar Saunack | Shourya Pandey', font='Fixedsys 7 bold', bg='black', fg='gray50', bd=0).grid(row=4, column=0)
+		tk.Label(Footer, text='Contact', font='Verdana 7 underline', bg='black', fg='gray40', bd=0).grid(row=5, column=0)
+		tk.Label(Footer, text='rishabhstpaul@gmail.com', font='Fixedsys 7 bold', bg='black', fg='gray50', bd=0).grid(row=6, column=0)
+
 		self.update_idletasks()
 		h = self.winfo_reqheight()
 		w = self.winfo_reqwidth()
 		ws = self.winfo_screenwidth()
 		x = (ws/2) - (w/2)
-		self.geometry("+%d+%d" % (x,h/4))
+		self.geometry("+%d+%d" % (x, h/10))
 
 	def checkEmpty(self, uid, pword, passPh):
 		if len(uid) == 0:
@@ -179,7 +194,7 @@ class BcD(tk.Tk):
 		self.clear_widgets()
 		self.attributes('-zoomed', True)
 		self.title('Grades')
-		self.grid_rowconfigure(3, weight=1)
+		self.grid_rowconfigure(4, weight=1)
 
 		self.footer.config(text='Succesfully Logged in', bg='black', fg='springGreen', relief='raised')
 
@@ -226,9 +241,9 @@ class BcD(tk.Tk):
 
 			enterGBut = tk.Button(self.eG, text='Submit Grades', bg='green', fg='white', activebackground='forestgreen' ,activeforeground='white', command=lambda: self.submitG(enterGrades.get("1.0", 'end-1c')))
 			enterGBut.pack()
-			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
+			self.eG.grid(row=4, column=0, columnspan=2, pady=(1,3), sticky="ns")
 		else:
-			self.eG.grid(row=3, column=0, columnspan=2, pady=(1,3), sticky="ns")
+			self.eG.grid(row=4, column=0, columnspan=2, pady=(1,3), sticky="ns")
 
 	def getGrades(self):
 		url = 'http://localhost/view.php'
@@ -290,9 +305,9 @@ class BcD(tk.Tk):
 				if self.student == 0:
 					viewList.bind("<Double-Button-1>", self.updateG)
 
-				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
+				self.vG.grid(row=4, column=0, columnspan=2, pady=(1,7), sticky="ns")
 			else:
-				self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
+				self.vG.grid(row=4, column=0, columnspan=2, pady=(1,7), sticky="ns")
 		elif flag == 1:
 			text = self.getGrades()
 			if text is None:
@@ -302,7 +317,7 @@ class BcD(tk.Tk):
 			for row in text.split('&'):
 				viewList.insert("", "end", values=row.split('%'))
 			self.footer.config(text='Grades Retrieved Successfully', bg='black', fg='springGreen', relief='raised')
-			self.vG.grid(row=3, column=0, columnspan=2, pady=(1,7), sticky="ns")
+			self.vG.grid(row=4, column=0, columnspan=2, pady=(1,7), sticky="ns")
 
 	def submitG(self, grades):
 		
