@@ -1,5 +1,5 @@
 # Detecting Insider Attacks on Databases using Blockchain
-Here is a Demo of its working :smiley: (*For better resolution, watch it in Full Screen mode*).
+Here is a Demo of its working :smiley: (*For better resolution, [watch this](https://raw.githubusercontent.com/Miraj50/Blockchain-Database/master/assets/BcD_Demo.gif) in Full Screen mode*).
 
 ![Insider Attack Demo](assets/BcD_Demo.gif)
 Note that during the Demo, *Multichain* was already running on the system (single node).
