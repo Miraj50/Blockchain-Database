@@ -40,4 +40,4 @@ Note that during the Demo, *Multichain* was already running on the system (singl
     * `$ publish instructor ss 6373333837`
     * `$ publish instructor puru 6373333837`
 ---
-### A Full report of the **protocol** and the implementation can be found [here](BlockchainDB_Report.pdf).
+### A full Report of the **protocol** and the implementation can be found [here](BlockchainDB_Report.pdf).
