@@ -16,7 +16,7 @@ Note that during the Demo, *Multichain* was already running on the system (singl
 
 * #### Grades Table
 
-    |Field||Null|Key|
+    |Field|Type|Null|Key|
     |:---:|:---:|:---:|:---:|
     |uid|varchar(128)|NO|PRI|
     |course|varchar(10)|NO|PRI|
@@ -28,6 +28,7 @@ Note that during the Demo, *Multichain* was already running on the system (singl
 1. **Start Node**
     * `$ multichain-util create chain1`
     * `$ multichaind chain1 -daemon`
+    
 2. **Create Streams**
     * `$ create stream stream1 false`
     * `$ subscribe stream1`
@@ -35,9 +36,10 @@ Note that during the Demo, *Multichain* was already running on the system (singl
     * `$ subscribe pubkey`
     * `$ create stream instructor false`
     * `$ subscribe instructor`
+    
 3. **Publish the courses of instructors** (*Course is hex encoded*)
     * `$ publish instructor ss 6373333137`
     * `$ publish instructor ss 6373333837`
     * `$ publish instructor puru 6373333837`
 ---
-### A Full report of the **protocol** and the implementation can be found [here](BlockchainDB_Report.pdf).
+ > #### A full report of the Protocol and the Implementation can be [found here](BlockchainDB_Report.pdf).
