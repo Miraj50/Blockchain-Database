@@ -1,4 +1,4 @@
-# Detecting Insider Attacks on Databases
+# Detecting Insider Attacks on Databases using Blockchain
 Here is a Demo of its working :smiley:.
 
 ![Insider Attack Demo](assets/BcD_Demo.gif)
