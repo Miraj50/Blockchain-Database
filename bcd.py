@@ -1,9 +1,14 @@
+#!/usr/bin/env python3
+# -*- coding: utf-8 -*-
+# This project is a demonstration of detecting insider attacks on databases using Blockchain
+# Copyright (C) 2018  Rishabh Raj
+# This code is licensed under GNU GPLv3 license. See LICENSE.md for details
+
 import tkinter as tk
 import tkinter.messagebox as msgbox
 from tkinter import scrolledtext, simpledialog
 import tkinter.ttk as ttk
-import requests
-import os, hashlib
+import requests, os, hashlib
 from Crypto.PublicKey import RSA
 from Crypto.Signature import PKCS1_v1_5 as pkcs
 from Crypto.Hash import SHA256
@@ -19,7 +24,6 @@ class BcD(tk.Tk):
 		self.reload_button = 0
 		self.footer = tk.Label(self, text='The world is coming to an end... SAVE YOUR BUFFERS !', font='Verdana 9', bg='black', fg='springGreen', relief='raised')
 		self.footer.grid(row=0, column=0, columnspan=2, sticky="nsew")
-		# self.Home(0)
 		self.Start()
 
 	def Start(self):
