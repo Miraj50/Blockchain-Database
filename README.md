@@ -50,7 +50,7 @@ Note that during the Demo, *Multichain* was already running on the system (singl
 
 All the source files are licensed under GNU GLPv3 license. Refer [LICENSE](https://github.com/Miraj50/Blockchain-Database/blob/master/LICENSE) for more details.
 
-    This project is a demonstration of detecting insider attacks on databases using Blockchain.
+    This project demonstrates detection of insider attacks on databases using Blockchain.
 
     Copyright (C) 2018  Rishabh Raj
     This code is licensed under GNU GPLv3 license. See LICENSE for details
