@@ -45,26 +45,25 @@ Note that during the Demo, *Multichain* was already running on the system (singl
 
  > ### A full Report of the ***Protocol*** and the ***Implementation*** can be [found here](BlockchainDB_Report.pdf).
 <hr>
+
 #### COPYRIGHT and LICENSE
 
-```
 All the source files are licensed under GNU GLPv3 license. Refer [LICENSE](https://github.com/Miraj50/Blockchain-Database/blob/master/LICENSE) for more details.
 
-This project is a demonstration of detecting insider attacks on databases using Blockchain.
+    This project is a demonstration of detecting insider attacks on databases using Blockchain.
 
-Copyright (C) 2018  Rishabh Raj\
-This code is licensed under GNU GPLv3 license. See [LICENSE](https://github.com/Miraj50/Blockchain-Database/blob/master/LICENSE) for details
+    Copyright (C) 2018  Rishabh Raj\
+    This code is licensed under GNU GPLv3 license. See LICENSE for details
 
-This project is free software: you can redistribute it and/or modify\
-it under the terms of the GNU General Public License as published by\
-the Free Software Foundation, either version 3 of the License, or\
-(at your option) any later version.
+    This project is free software: you can redistribute it and/or modify\
+    it under the terms of the GNU General Public License as published by\
+    the Free Software Foundation, either version 3 of the License, or\
+    (at your option) any later version.
 
-This program is distributed in the hope that it will be useful,\
-but WITHOUT ANY WARRANTY; without even the implied warranty of\
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\
-GNU General Public License for more details.
+    This program is distributed in the hope that it will be useful,\
+    but WITHOUT ANY WARRANTY; without even the implied warranty of\
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the\
+    GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License\
-along with this program.  If not, see <https://www.gnu.org/licenses/>.
-```
+    You should have received a copy of the GNU General Public License\
+    along with this program.  If not, see <https://www.gnu.org/licenses/>.
