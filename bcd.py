@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 # This project is a demonstration of detecting insider attacks on databases using Blockchain
 # Copyright (C) 2018  Rishabh Raj
-# This code is licensed under GNU GPLv3 license. See LICENSE.md for details
+# This code is licensed under GNU GPLv3 license. See LICENSE for details
 
 import tkinter as tk
 import tkinter.messagebox as msgbox
