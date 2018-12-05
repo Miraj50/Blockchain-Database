@@ -1,8 +1,9 @@
+<!-- This project is a demonstration of detecting insider attacks on databases using Blockchain
+Copyright (C) 2018  Rishabh Raj
+This code is licensed under GNU GPLv3 license. See LICENSE.md for details -->
+
 <?php 
 	session_start();
-	// if(isset($_SESSION['logged_in'])){
-	// 	header("location:home.php");
-	// }
 
 	$servername = "localhost";
 	$username = "root";
