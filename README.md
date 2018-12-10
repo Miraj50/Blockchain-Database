@@ -37,10 +37,10 @@ Note that during the Demo, *Multichain* was already running on the system (singl
     * `$ create stream instructor false`
     * `$ subscribe instructor`
     
-3. **Publish the courses of instructors** (*<span style='font-size:12px'>Course is hex encoded</span>*)
-    * `$ publish instructor ss 6373333137` <span style='color:gray;font-size:10px'>(InstructorID = <b>ss</b> and course = <b>cs317</b>)</span>
-    * `$ publish instructor ss 6373333837` <span style='color:gray;font-size:10px'>(InstructorID = <b>ss</b> and course = <b>cs387</b>)</span>
-    * `$ publish instructor puru 6373333333` <span style='color:gray;font-size:10px'>(InstructorID = <b>puru</b> and course = <b>cs333</b>)</span>
+3. **Publish the courses of instructors** (*Course is hex encoded*)
+    * `$ publish instructor ss 6373333137` <sub><sup>(InstructorID = <b>ss</b> and course = <b>cs317</b>)</sup></sub>
+    * `$ publish instructor ss 6373333837` <sub><sup>(InstructorID = <b>ss</b> and course = <b>cs387</b>)</sup></sub>
+    * `$ publish instructor puru 6373333333` <sub><sup>(InstructorID = <b>puru</b> and course = <b>cs333</b>)</sup></sub>
 <hr>
 
  ### A full Report of the ***Protocol*** and the ***Implementation*** can be [found here](BlockchainDB_Report.pdf).
